@@ -14,7 +14,9 @@ class ProductController
     }
     public function all()
     {
-        $kg = ProductsModel::where('id', '=', 1)->where('slug', '=', 'dien-thoai-1')->get();
+        $kg = ProductsModel::where('id', '=', 1)
+            ->where('slug', '=', 'dien-thoai-1')
+            ->get();
         echo count($kg);
     }
 }
