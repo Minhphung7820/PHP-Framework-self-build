@@ -1,0 +1,11 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Core\\": "Core/",
+            "Http\\": "Http/",
+            "Models\\": "Models/",
+            "Public\\": "Public/",
+            "Views\\": "Views/"
+        }
+    }
+}
