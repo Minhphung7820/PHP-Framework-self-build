@@ -2,6 +2,7 @@
 
 namespace Http\Controllers;
 
+use Models\ProductsModel;
 use Supports\Facades\LogFacade;
 
 class ProductController
@@ -13,6 +14,7 @@ class ProductController
     }
     public function all()
     {
-        echo "Đây là trang tất cả sản phẩm ";
+        $kg = ProductsModel::where('id', '=', 1)->where('slug', '=', 'dien-thoai-1')->get();
+        echo count($kg);
     }
 }
