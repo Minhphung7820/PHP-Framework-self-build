@@ -15,6 +15,10 @@ class ComposerStaticInit9436c7ebb492eb130c72f4ee39f514c8
         array (
             'Supports\\' => 9,
         ),
+        'R' => 
+        array (
+            'Routers\\' => 8,
+        ),
         'P' => 
         array (
             'Public\\' => 7,
@@ -42,6 +46,10 @@ class ComposerStaticInit9436c7ebb492eb130c72f4ee39f514c8
         'Supports\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Supports',
+        ),
+        'Routers\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Routers',
         ),
         'Public\\' => 
         array (

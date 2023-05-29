@@ -23,7 +23,30 @@ if (!function_exists('config')) {
         return null;
     }
 }
+if (!function_exists('router')) {
+    function router($key)
+    {
+        $keys = explode('.', $key);
+        $routerFile = './Routers/' . $keys[0] . '.php';
+        unset($keys[0]);
+        if (file_exists($routerFile)) {
+            $router = include $routerFile;
 
+            $value = $router;
+
+            foreach ($keys as $k) {
+                if (!isset($value[$k])) {
+                    return null;
+                }
+                $value = $value[$k];
+            }
+
+            return $value;
+        }
+
+        return null;
+    }
+}
 if (!function_exists('redirect')) {
     function redirect($url)
     {

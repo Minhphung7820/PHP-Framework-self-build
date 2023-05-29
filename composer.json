@@ -5,6 +5,7 @@
             "Http\\": "Http/",
             "Providers\\": "Providers/",
             "Models\\": "Models/",
+            "Routers\\": "Routers/",
             "Public\\": "Public/",
             "Supports\\": "Supports/",
             "Views\\": "Views/"

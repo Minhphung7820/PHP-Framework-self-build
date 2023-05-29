@@ -30,7 +30,7 @@ class App
     protected function handleRequest($url)
     {
         $routeMatched = false;
-        $routes = config('routes');
+        $routes = router('web');
         $url = (strlen($url) > 1) ? rtrim($url, "/") : "/";
         foreach ($routes as $route => $handler) {
             // Tách các phần của route và URL thành mảng
