@@ -12,15 +12,7 @@ class App
     public function __construct($url)
     {
         try {
-            $this->urlCurrent = explode('/', filter_var(trim($url, '/')));
-            $this->controller = (isset($this->urlCurrent[0]) && class_exists('Http\\Controllers\\' . $this->urlCurrent[0])) ? ucfirst($this->urlCurrent[0]) : "Home";
-            $controllerNamespace = 'Http\\Controllers\\' . $this->controller;
-            $this->controller = new $controllerNamespace;
-            $this->method = (isset($this->urlCurrent[1]) && method_exists($this->controller, $this->urlCurrent[1])) ? $this->urlCurrent[1] : "index";
-            unset($this->urlCurrent[0]);
-            unset($this->urlCurrent[1]);
-            $this->params = (isset($this->urlCurrent)) ? array_values($this->urlCurrent) :  [];
-            $this->runMiddlewares(config('kernel.middlewares'), $this->controller, $this->method, $this->params);
+            $this->handleRequest($url);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -38,5 +30,48 @@ class App
             return $middlewareInstance->handle($request, $next);
         }
         return call_user_func_array([$controller, $method], $params);
+    }
+    protected function handleRequest($url)
+    {
+        $routes = config('routes');
+        $url = rtrim($url, "/");
+        foreach ($routes as $route => $handler) {
+            // Tách các phần của route và URL thành mảng
+            $routeParts = explode('/', $route);
+            $urlParts = explode('/', $url);
+
+            // Kiểm tra số lượng phần của route và URL
+            if (count($routeParts) !== count($urlParts)) {
+                continue; // Không khớp, tiếp tục với route khác
+            }
+
+            $parameters = [];
+
+            // Kiểm tra từng phần của route và URL
+            for ($i = 0; $i < count($routeParts); $i++) {
+                if ($routeParts[$i] === $urlParts[$i]) {
+                    continue; // Phần tĩnh khớp, tiếp tục với phần tiếp theo
+                }
+
+                // Kiểm tra nếu là một tham số động (được đặt trong dấu ngoặc nhọn)
+                if (strpos($routeParts[$i], '{') === 0 && strpos($routeParts[$i], '}') === strlen($routeParts[$i]) - 1) {
+                    // Lưu giá trị tham số vào mảng parameters
+                    $parameterName = trim($routeParts[$i], '{}');
+                    $parameterValue = $urlParts[$i];
+                    $parameters[$parameterName] = $parameterValue;
+                } else {
+                    // Không khớp, tiếp tục với route khác
+                    continue 2;
+                }
+            }
+            // Route khớp được tìm thấy
+            $params = array_values($parameters);
+            list($controller, $method) = explode("@", $handler);
+            $controller = 'Http\\Controllers\\' . $controller;
+            $instanceController = new $controller();
+            $this->runMiddlewares(config('kernel.middlewares'), $instanceController, $method, $params);
+            // Xử lý tương ứng với route tìm thấy
+            break;
+        }
     }
 }

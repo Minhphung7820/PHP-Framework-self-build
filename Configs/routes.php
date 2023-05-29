@@ -1,5 +1,6 @@
 <?php
 return [
-    '' => 'Home@index',
-
+    '/' => 'Home@index',
+    '/san-pham/{slug}' => 'Product@detail',
+    '/san-pham' => 'Product@all'
 ];
