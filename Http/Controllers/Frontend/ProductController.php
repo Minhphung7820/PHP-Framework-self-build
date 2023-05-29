@@ -1,6 +1,6 @@
 <?php
 
-namespace Http\Controllers;
+namespace Http\Controllers\Frontend;
 
 use Models\ProductsModel;
 use Supports\Facades\LogFacade;

@@ -4,10 +4,6 @@ namespace Core;
 
 class App
 {
-    // protected $controller;
-    // protected $method;
-    // protected array $params;
-    // protected $urlCurrent;
 
     public function __construct($url)
     {
@@ -67,8 +63,8 @@ class App
             }
             // Route khớp được tìm thấy
             $params = array_values($parameters);
-            list($controller, $method) = explode("@", $handler);
-            $controller = 'Http\\Controllers\\' . $controller;
+            list($part, $controller, $method) = explode("@", $handler);
+            $controller = 'Http\\Controllers\\' . $part . '\\' . $controller;
             $instanceController = new $controller();
             $this->runMiddlewares(config('kernel.middlewares'), $instanceController, $method, $params);
             // Xử lý tương ứng với route tìm thấy

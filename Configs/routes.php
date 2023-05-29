@@ -1,6 +1,6 @@
 <?php
 return [
-    '/' => 'HomeController@index',
-    '/san-pham/{slug}' => 'ProductController@detail',
-    '/san-pham' => 'ProductController@all'
+    '/' => 'frontend@HomeController@index',
+    '/san-pham/{slug}' => 'frontend@ProductController@detail',
+    '/san-pham' => 'frontend@ProductController@all'
 ];
