@@ -2,10 +2,13 @@
 
 namespace Http\Controllers;
 
-class Product
+use Supports\Facades\LogFacade;
+
+class ProductController
 {
     public function detail($slug)
     {
+        LogFacade::info("ĐÃ XEM SẢN PHẨM");
         echo "Sản phảm có slug là : " . $slug;
     }
     public function all()

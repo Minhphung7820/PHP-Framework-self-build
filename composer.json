@@ -5,6 +5,7 @@
             "Http\\": "Http/",
             "Models\\": "Models/",
             "Public\\": "Public/",
+            "Supports\\": "Supports/",
             "Views\\": "Views/"
         }
     }

@@ -4,10 +4,10 @@ namespace Core;
 
 class App
 {
-    protected $controller;
-    protected $method;
-    protected array $params;
-    protected $urlCurrent;
+    // protected $controller;
+    // protected $method;
+    // protected array $params;
+    // protected $urlCurrent;
 
     public function __construct($url)
     {
@@ -33,8 +33,9 @@ class App
     }
     protected function handleRequest($url)
     {
+        $routeMatched = false;
         $routes = config('routes');
-        $url = rtrim($url, "/");
+        $url = (strlen($url) > 1) ? rtrim($url, "/") : "/";
         foreach ($routes as $route => $handler) {
             // Tách các phần của route và URL thành mảng
             $routeParts = explode('/', $route);
@@ -71,7 +72,13 @@ class App
             $instanceController = new $controller();
             $this->runMiddlewares(config('kernel.middlewares'), $instanceController, $method, $params);
             // Xử lý tương ứng với route tìm thấy
+            $routeMatched = true;
             break;
+        }
+        if (!$routeMatched) {
+            // Báo lỗi 404
+            header("HTTP/1.0 404 Not Found");
+            echo "Error 404: Page not found";
         }
     }
 }

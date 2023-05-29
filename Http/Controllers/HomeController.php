@@ -2,7 +2,7 @@
 
 namespace Http\Controllers;
 
-class Home
+class HomeController
 {
     public function index()
     {

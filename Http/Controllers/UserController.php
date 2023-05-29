@@ -2,7 +2,7 @@
 
 namespace Http\Controllers;
 
-class User
+class UserController
 {
     public function index()
     {
