@@ -3,6 +3,7 @@
         "psr-4": {
             "Core\\": "Core/",
             "Http\\": "Http/",
+            "Providers\\": "Providers/",
             "Models\\": "Models/",
             "Public\\": "Public/",
             "Supports\\": "Supports/",

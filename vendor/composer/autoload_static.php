@@ -18,6 +18,7 @@ class ComposerStaticInit9436c7ebb492eb130c72f4ee39f514c8
         'P' => 
         array (
             'Public\\' => 7,
+            'Providers\\' => 10,
         ),
         'M' => 
         array (
@@ -45,6 +46,10 @@ class ComposerStaticInit9436c7ebb492eb130c72f4ee39f514c8
         'Public\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Public',
+        ),
+        'Providers\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Providers',
         ),
         'Models\\' => 
         array (

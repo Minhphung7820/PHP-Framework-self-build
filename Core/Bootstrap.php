@@ -2,19 +2,18 @@
 
 namespace Core;
 
-use DirectoryIterator;
+use Providers\HelperServiceProvider;
 
 class Bootstrap
 {
+    protected $providers = [
+        HelperServiceProvider::class
+    ];
     public function __construct()
     {
-        // Khai báo helpers;
-        $folderPath = './Helpers';
-        $directoryIterator = new DirectoryIterator($folderPath);
-        foreach ($directoryIterator as $fileInfo) {
-            if ($fileInfo->isFile()) {
-                require $folderPath . "/" . $fileInfo->getFilename();
-            }
+        foreach ($this->providers as $provider) {
+            $runProvider = new $provider();
+            $runProvider->boot();
         }
     }
 }
