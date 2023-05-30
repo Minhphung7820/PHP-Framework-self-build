@@ -37,8 +37,8 @@ class Router implements RouterInterface
         $params = [];
         foreach ($routes as $route => $handler) {
             $routeMapping = $route;
-            $patternParamMapping = '|\{(\w+)\}|';
-            $routeRegex = '|^' . preg_replace($patternParamMapping, '(\w+)',  $routeMapping) . '$|';
+            $patternParamMapping = '|\{(.+?)\}|';
+            $routeRegex = '|^' . preg_replace($patternParamMapping, '(.+?)',  $routeMapping) . '$|';
             if (preg_match($routeRegex, $url, $matches)) {
                 if (strpos($routeMapping, '{') !== false && strpos($routeMapping, '}') !== false) {
                     $countParams = substr_count($routeMapping, "{");

@@ -51,3 +51,19 @@ if (!function_exists('redirect')) {
         exit();
     }
 }
+
+if (!function_exists('view')) {
+    function view($viewPath, $data = [])
+    {
+        $filePath = './Views/' . str_replace('.', '/', $viewPath) . '.php';
+
+        if (file_exists($filePath)) {
+            ob_start();
+            extract($data);
+            include $filePath;
+            return ob_get_contents();
+        }
+
+        throw new Exception("View [$viewPath] not found.");
+    }
+}

@@ -18,9 +18,9 @@ class ProductController extends BaseController
     }
     public function all()
     {
-        $kg = ProductsModel::where('id', '=', 1)
+        $kg = ProductsModel::where('id', '=', 2)
             ->where('slug', '=', 'dien-thoai-1')
             ->get();
-        echo count($kg);
+        return view('frontend.products.index', ['kg' => $kg]);
     }
 }
