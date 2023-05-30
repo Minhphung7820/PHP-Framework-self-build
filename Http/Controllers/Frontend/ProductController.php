@@ -12,10 +12,9 @@ class ProductController extends BaseController
     {
         echo "Đây là index";
     }
-    public function detail($slug)
+    public function detail($cate, $slug)
     {
-        LogFacade::info("ĐÃ XEM SẢN PHẨM");
-        echo "Sản phảm có slug là : " . $slug;
+        echo "Sản phảm có slug là : " . $slug . " và cate là : " . $cate;
     }
     public function all()
     {
