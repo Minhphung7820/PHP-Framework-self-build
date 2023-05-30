@@ -2,18 +2,20 @@
 
 namespace Core;
 
-class App
+use Core\Interfaces\RouterInterface;
+
+class Router implements RouterInterface
 {
-
-    public function __construct($url)
+    protected string $routeNotFound;
+    protected array $routesNotFound;
+    public function loadRouteFrom($routes, $middleware = [])
     {
-        try {
-            $this->handleRequest($url);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        $this->handleRequest($routes, $middleware);
     }
-
+    protected function getUrl()
+    {
+        return (strlen($_SERVER['REQUEST_URI']) > 1) ? rtrim($_SERVER['REQUEST_URI'], "/") : "/";
+    }
     protected function runMiddlewares($middlewares, $controller, $method, $params)
     {
         $middleware = array_shift($middlewares);
@@ -27,11 +29,9 @@ class App
         }
         return call_user_func_array([$controller, $method], $params);
     }
-    protected function handleRequest($url)
+    protected function handleRequest($routes, $middlewares = [])
     {
-        $routeMatched = false;
-        $routes = router('web');
-        $url = (strlen($url) > 1) ? rtrim($url, "/") : "/";
+        $url = $this->getUrl();
         foreach ($routes as $route => $handler) {
             // Tách các phần của route và URL thành mảng
             $routeParts = explode('/', $route);
@@ -66,15 +66,9 @@ class App
             list($part, $controller, $method) = explode("@", $handler);
             $controller = 'Http\\Controllers\\' . $part . '\\' . $controller;
             $instanceController = new $controller();
-            $this->runMiddlewares(config('kernel.middlewares'), $instanceController, $method, $params);
+            $this->runMiddlewares($middlewares, $instanceController, $method, $params);
             // Xử lý tương ứng với route tìm thấy
-            $routeMatched = true;
             break;
-        }
-        if (!$routeMatched) {
-            // Báo lỗi 404
-            header("HTTP/1.0 404 Not Found");
-            echo "Error 404: Page not found";
         }
     }
 }

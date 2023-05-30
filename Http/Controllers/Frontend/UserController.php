@@ -2,7 +2,9 @@
 
 namespace Http\Controllers\Frontend;
 
-class UserController
+use Http\Controllers\BaseController;
+
+class UserController extends BaseController
 {
     public function index()
     {

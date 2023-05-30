@@ -3,11 +3,13 @@
 namespace Core;
 
 use Providers\HelperServiceProvider;
+use Providers\RouteServiceProvider;
 
 class Bootstrap
 {
     protected $providers = [
-        HelperServiceProvider::class
+        HelperServiceProvider::class,
+        RouteServiceProvider::class
     ];
     public function __construct()
     {

@@ -26,25 +26,22 @@ if (!function_exists('config')) {
 if (!function_exists('router')) {
     function router($key)
     {
-        $keys = explode('.', $key);
-        $routerFile = './Routers/' . $keys[0] . '.php';
-        unset($keys[0]);
-        if (file_exists($routerFile)) {
-            $router = include $routerFile;
-
-            $value = $router;
-
-            foreach ($keys as $k) {
-                if (!isset($value[$k])) {
-                    return null;
-                }
-                $value = $value[$k];
+        if (strpos($key, '.') !== false) {
+            $keys = explode('.', $key);
+            $routeFile = './Routers/' . $keys[0] . '/' . $keys[1] . '.php';
+            if (file_exists($routeFile)) {
+                $router = include $routeFile;
+                $value = $router;
+                return $value;
             }
-
-            return $value;
+        } else {
+            $routeFile = './Routers/' . $key . '.php';
+            if (file_exists($routeFile)) {
+                $router = include $routeFile;
+                $value = $router;
+                return $value;
+            }
         }
-
-        return null;
     }
 }
 if (!function_exists('redirect')) {

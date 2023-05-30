@@ -4,9 +4,14 @@ namespace Http\Controllers\Frontend;
 
 use Models\ProductsModel;
 use Supports\Facades\LogFacade;
+use Http\Controllers\BaseController;
 
-class ProductController
+class ProductController extends BaseController
 {
+    public function index()
+    {
+        echo "Đây là index";
+    }
     public function detail($slug)
     {
         LogFacade::info("ĐÃ XEM SẢN PHẨM");
