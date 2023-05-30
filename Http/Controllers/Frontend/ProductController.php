@@ -3,7 +3,6 @@
 namespace Http\Controllers\Frontend;
 
 use Models\ProductsModel;
-use Supports\Facades\LogFacade;
 use Http\Controllers\BaseController;
 
 class ProductController extends BaseController
@@ -19,7 +18,7 @@ class ProductController extends BaseController
     public function all()
     {
         $kg = ProductsModel::where('id', '=', 2)
-            ->where('slug', '=', 'dien-thoai-1')
+            ->orWhere('slug', '=', 'dien-thoai-1')
             ->get();
         return view('frontend.products.index', ['kg' => $kg]);
     }

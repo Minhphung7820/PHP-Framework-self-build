@@ -4,7 +4,7 @@ namespace Core;
 
 use Exception;
 use PDO;
-use Supports\Facades\LogFacade;
+use Supports\Facades\Logger;;
 
 class ConnectDB
 {
@@ -20,12 +20,27 @@ class ConnectDB
             $this->connection = new PDO("mysql:host=$host;dbname=$database", $username, $password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (Exception $e) {
-            LogFacade::error($e->getMessage());
+            Logger::error($e->getMessage());
         }
     }
 
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    public function beginTransaction()
+    {
+        return $this->connection->beginTransaction();
+    }
+
+    public function commit()
+    {
+        return $this->connection->commit();
+    }
+
+    public function rollback()
+    {
+        return $this->connection->rollBack();
     }
 }

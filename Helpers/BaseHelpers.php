@@ -67,3 +67,9 @@ if (!function_exists('view')) {
         throw new Exception("View [$viewPath] not found.");
     }
 }
+if (!function_exists('db')) {
+    function db()
+    {
+        return new Core\ConnectDB();
+    }
+}

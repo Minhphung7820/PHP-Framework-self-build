@@ -2,7 +2,7 @@
 
 namespace Supports\Facades;
 
-class LogFacade
+class Logger
 {
     public static function info($message)
     {
