@@ -19,7 +19,6 @@ class ConnectDB
         try {
             $this->connection = new PDO("mysql:host=$host;dbname=$database", $username, $password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            // LogFacade::info("ĐÃ KẾT NỐI THÀNH CÔNG !");
         } catch (Exception $e) {
             LogFacade::error($e->getMessage());
         }

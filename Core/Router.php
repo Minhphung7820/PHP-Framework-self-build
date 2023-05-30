@@ -6,11 +6,12 @@ use Core\Interfaces\RouterInterface;
 
 class Router implements RouterInterface
 {
-    protected string $routeNotFound;
     protected array $routesNotFound;
-    public function loadRouteFrom($routes, $middleware = [])
+    protected string $routeCurrent;
+    public function loadRoute($namespace, $routes, $middleware = [])
     {
-        $this->handleRequest($routes, $middleware);
+        $this->routeCurrent = $namespace;
+        $this->handleRequest($this->routeCurrent, $routes, $middleware);
     }
     protected function getUrl()
     {
@@ -29,46 +30,41 @@ class Router implements RouterInterface
         }
         return call_user_func_array([$controller, $method], $params);
     }
-    protected function handleRequest($routes, $middlewares = [])
+    protected function handleRequest($namespace, $routes, $middlewares = [])
     {
+        $flag404 = true;
         $url = $this->getUrl();
+        $params = [];
         foreach ($routes as $route => $handler) {
-            // Tách các phần của route và URL thành mảng
-            $routeParts = explode('/', $route);
-            $urlParts = explode('/', $url);
-
-            // Kiểm tra số lượng phần của route và URL
-            if (count($routeParts) !== count($urlParts)) {
-                continue; // Không khớp, tiếp tục với route khác
-            }
-
-            $parameters = [];
-
-            // Kiểm tra từng phần của route và URL
-            for ($i = 0; $i < count($routeParts); $i++) {
-                if ($routeParts[$i] === $urlParts[$i]) {
-                    continue; // Phần tĩnh khớp, tiếp tục với phần tiếp theo
-                }
-
-                // Kiểm tra nếu là một tham số động (được đặt trong dấu ngoặc nhọn)
-                if (strpos($routeParts[$i], '{') === 0 && strpos($routeParts[$i], '}') === strlen($routeParts[$i]) - 1) {
-                    // Lưu giá trị tham số vào mảng parameters
-                    $parameterName = trim($routeParts[$i], '{}');
-                    $parameterValue = $urlParts[$i];
-                    $parameters[$parameterName] = $parameterValue;
+            $routeMapping = $route;
+            $patternParamMapping = '|\{(\w+)\}|';
+            $routeRegex = '|^' . preg_replace($patternParamMapping, '(\w+)',  $routeMapping) . '$|';
+            if (preg_match($routeRegex, $url, $matches)) {
+                if (strpos($routeMapping, '{') !== false && strpos($routeMapping, '}') !== false) {
+                    $countParams = substr_count($routeMapping, "{");
+                    for ($i = 1; $i <= $countParams; $i++) {
+                        $params[] = $matches[$i];
+                    }
                 } else {
-                    // Không khớp, tiếp tục với route khác
-                    continue 2;
+                    $params = [];
                 }
+                list($part, $controller, $method) = explode("@", $handler);
+                $controller = 'Http\\Controllers\\' . $part . '\\' . $controller;
+                $instanceController = new $controller();
+                $this->runMiddlewares($middlewares, $instanceController, $method, $params);
+                $flag404 = false;
+                break;
             }
-            // Route khớp được tìm thấy
-            $params = array_values($parameters);
-            list($part, $controller, $method) = explode("@", $handler);
-            $controller = 'Http\\Controllers\\' . $part . '\\' . $controller;
-            $instanceController = new $controller();
-            $this->runMiddlewares($middlewares, $instanceController, $method, $params);
-            // Xử lý tương ứng với route tìm thấy
-            break;
+        }
+        if ($flag404) {
+            $this->routesNotFound[$namespace] = 0;
+        }
+    }
+    protected function handleRoutNotFound()
+    {
+        if (array_key_exists($this->routeCurrent, $this->routesNotFound)) {
+            header("HTTP/1.1 404 Not Found");
+            echo "Lỗi 404 - Không tìm thấy trang";
         }
     }
 }

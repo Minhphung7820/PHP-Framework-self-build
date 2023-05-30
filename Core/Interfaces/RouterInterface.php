@@ -4,5 +4,5 @@ namespace Core\Interfaces;
 
 interface RouterInterface
 {
-    public function loadRouteFrom($routes, $middleware = []);
+    public function loadRoute($namespace, $routes, $middleware = []);
 }

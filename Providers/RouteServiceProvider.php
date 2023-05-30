@@ -10,14 +10,15 @@ class RouteServiceProvider extends Router implements BaseServiceProvider
     {
         $this->loadRouteApi();
         $this->loadRouteWeb();
+        $this->handleRoutNotFound();
     }
     public function loadRouteApi()
     {
-        $this->loadRouteFrom(router('api.user'), config('kernel.middlewares'));
-        $this->loadRouteFrom(router('api.product'), config('kernel.middlewares'));
+        $this->loadRoute('api.user', router('api.user'), config('kernel.middlewares'));
+        $this->loadRoute('api.product', router('api.product'), config('kernel.middlewares'));
     }
     public function loadRouteWeb()
     {
-        $this->loadRouteFrom(router('web'), config('kernel.middlewares'));
+        $this->loadRoute('web', router('web'), config('kernel.middlewares'));
     }
 }
