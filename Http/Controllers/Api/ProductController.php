@@ -15,4 +15,10 @@ class ProductController
     {
         echo "Đây là trang api tất cả sản phẩm !";
     }
+    public function add()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            return response()->json(true);
+        }
+    }
 }

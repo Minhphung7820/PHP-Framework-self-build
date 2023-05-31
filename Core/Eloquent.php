@@ -56,6 +56,19 @@ class Eloquent extends ConnectDB
         return static::executeQuery($sql, $values);
     }
 
+    public static function first()
+    {
+        $values = [];
+        $sql = "SELECT * FROM " . static::$table;
+
+        $whereClause = static::buildWhereConditions();
+
+        $sql .= $whereClause['sql'];
+        $values = $whereClause['values'];
+
+        return static::executeSingle($sql, $values);
+    }
+
     public static function update($data)
     {
         $sql = "UPDATE " . static::$table . " SET ";

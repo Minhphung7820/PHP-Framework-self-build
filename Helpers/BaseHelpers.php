@@ -1,7 +1,4 @@
 <?php
-
-use Carbon\Carbon;
-
 if (!function_exists('config')) {
     function config($key)
     {
@@ -69,6 +66,12 @@ if (!function_exists('db')) {
 if (!function_exists('now')) {
     function now()
     {
-        return new Carbon();
+        return new \Carbon\Carbon();
+    }
+}
+if (!function_exists('response')) {
+    function response()
+    {
+        return new \Supports\Http\Response();
     }
 }

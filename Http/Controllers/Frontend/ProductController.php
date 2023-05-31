@@ -16,21 +16,17 @@ class ProductController extends BaseController
     }
     public function detail($slug)
     {
-        echo "Sản phảm có slug là : " . $slug;
+        $data = ProductsModel::where('slug', '=', $slug)->where('id', '=', 1)->first();
+
+        return view('frontend.products.detail', [
+            'data' => $data
+        ]);
     }
     public function all()
     {
-        ConnectDB::beginTransaction();
-        try {
-            $kg = ProductsModel::where("id", "=", 7)->delete();
-            ConnectDB::commit();
-        } catch (PDOException $e) {
-            Logger::error("ĐÃ XÃY RA LỖI : " . $e->getMessage());
-            ConnectDB::rollback();
-        }
-        echo now()->setTimezone('Asia/Ho_Chi_Minh')->diffForHumans();
+        $prods = ProductsModel::all();
         return view('frontend.products.index', [
-            'kg' => $kg
+            'prods' => $prods
         ]);
     }
 }
