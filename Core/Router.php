@@ -6,12 +6,11 @@ use Core\Interfaces\RouterInterface;
 
 class Router implements RouterInterface
 {
-    protected array $routesNotFound;
-    protected string $routeCurrent;
+    protected array $routesNotFound = [];
+    protected string $routeAcitve = '';
     public function loadRoute($namespace, $routes, $middleware = [])
     {
-        $this->routeCurrent = $namespace;
-        $this->handleRequest($this->routeCurrent, $routes, $middleware);
+        $this->handleRequest($namespace, $routes, $middleware);
     }
     protected function getUrl()
     {
@@ -37,8 +36,8 @@ class Router implements RouterInterface
         $params = [];
         foreach ($routes as $route => $handler) {
             $routeMapping = $route;
-            $patternParamMapping = '|\{(.+?)\}|';
-            $routeRegex = '|^' . preg_replace($patternParamMapping, '(.+?)',  $routeMapping) . '$|';
+            $patternParamMapping = '|\{([\w-]+)\}|';
+            $routeRegex = '|^' . preg_replace($patternParamMapping, '([\w-]+)',  $routeMapping) . '$|';
             if (preg_match($routeRegex, $url, $matches)) {
                 if (strpos($routeMapping, '{') !== false && strpos($routeMapping, '}') !== false) {
                     $countParams = substr_count($routeMapping, "{");
@@ -52,6 +51,7 @@ class Router implements RouterInterface
                 $controller = 'Http\\Controllers\\' . $part . '\\' . $controller;
                 $instanceController = new $controller();
                 $this->runMiddlewares($middlewares, $instanceController, $method, $params);
+                $this->routeAcitve = $namespace;
                 $flag404 = false;
                 break;
             }
@@ -62,9 +62,9 @@ class Router implements RouterInterface
     }
     protected function handleRoutNotFound()
     {
-        if (array_key_exists($this->routeCurrent, $this->routesNotFound)) {
-            header("HTTP/1.1 404 Not Found");
-            echo "Lỗi 404 - Không tìm thấy trang";
+        if ($this->routeAcitve === '') {
+            header("HTTP/1.0 404 Not Found");
+            echo "Error 404: Page not found";
         }
     }
 }

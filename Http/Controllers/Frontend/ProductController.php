@@ -14,9 +14,9 @@ class ProductController extends BaseController
     {
         echo "Đây là index";
     }
-    public function detail($cate, $slug)
+    public function detail($cate)
     {
-        echo "Sản phảm có slug là : " . $slug . " và cate là : " . $cate;
+        echo "Sản phảm có cate là : " . $cate;
     }
     public function all()
     {

@@ -9,7 +9,7 @@ class ProductController
 {
     public function detail($slug)
     {
-        echo "Đây là trang api chi tiết sản phẩm !";
+        echo "Đây là trang api chi tiết sản phẩm với slug là : " . $slug;
     }
     public function all()
     {
