@@ -14,9 +14,9 @@ class ProductController extends BaseController
     {
         echo "Đây là index";
     }
-    public function detail($cate)
+    public function detail($slug)
     {
-        echo "Sản phảm có cate là : " . $cate;
+        echo "Sản phảm có slug là : " . $slug;
     }
     public function all()
     {
@@ -28,6 +28,7 @@ class ProductController extends BaseController
             Logger::error("ĐÃ XÃY RA LỖI : " . $e->getMessage());
             ConnectDB::rollback();
         }
+        echo now()->setTimezone('Asia/Ho_Chi_Minh')->diffForHumans();
         return view('frontend.products.index', [
             'kg' => $kg
         ]);

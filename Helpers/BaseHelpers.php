@@ -1,4 +1,7 @@
 <?php
+
+use Carbon\Carbon;
+
 if (!function_exists('config')) {
     function config($key)
     {
@@ -61,5 +64,11 @@ if (!function_exists('db')) {
     function db()
     {
         return new Core\ConnectDB();
+    }
+}
+if (!function_exists('now')) {
+    function now()
+    {
+        return new Carbon();
     }
 }
