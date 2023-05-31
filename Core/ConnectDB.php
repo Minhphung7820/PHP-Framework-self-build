@@ -2,45 +2,76 @@
 
 namespace Core;
 
-use Exception;
 use PDO;
+use PDOException;
 use Supports\Facades\Logger;;
 
 class ConnectDB
 {
-    private $connection;
+    private static $connection;
 
-    public function __construct()
+    public static function getConnection()
+    {
+        if (!isset(static::$connection)) {
+            static::createConnection();
+        }
+
+        return static::$connection;
+    }
+
+    public static function createConnection()
     {
         $host = config('database.db_host');
         $username = config('database.db_user');
         $password = config('database.db_password');
         $database = config('database.db_name');
         try {
-            $this->connection = new PDO("mysql:host=$host;dbname=$database", $username, $password);
-            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (Exception $e) {
+            static::$connection = new PDO("mysql:host=$host;dbname=$database", $username, $password);
+            static::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
             Logger::error($e->getMessage());
         }
     }
 
-    public function getConnection()
+    public static function beginTransaction()
     {
-        return $this->connection;
+        return static::getConnection()->beginTransaction();
     }
 
-    public function beginTransaction()
+    public static function commit()
     {
-        return $this->connection->beginTransaction();
+        return static::getConnection()->commit();
     }
 
-    public function commit()
+    public static function rollback()
     {
-        return $this->connection->commit();
+        return static::getConnection()->rollBack();
     }
 
-    public function rollback()
+    public static function execute($sql, $values = [])
     {
-        return $this->connection->rollBack();
+        $stmt = static::getConnection()->prepare($sql);
+        return $stmt->execute($values);
+    }
+
+    public static function executeInsertId($sql, $values = [])
+    {
+        $stmt = static::getConnection()->prepare($sql);
+        $stmt->execute($values);
+        return static::getConnection()->lastInsertId();
+    }
+
+    public static function executeQuery($sql, $values = [])
+    {
+        $stmt = static::getConnection()->prepare($sql);
+        $stmt->execute($values);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public static function executeSingle($sql, $values = [])
+    {
+        $stmt = static::getConnection()->prepare($sql);
+        $stmt->execute($values);
+        return $stmt->fetch(PDO::FETCH_OBJ);
     }
 }

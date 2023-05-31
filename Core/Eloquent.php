@@ -3,7 +3,6 @@
 namespace Core;
 
 use Core\ConnectDB;
-use PDO;
 
 class Eloquent extends ConnectDB
 {
@@ -13,7 +12,6 @@ class Eloquent extends ConnectDB
 
     public function __construct($table)
     {
-        parent::__construct();
         static::$table = $table;
     }
 
@@ -39,28 +37,96 @@ class Eloquent extends ConnectDB
         return new $className(static::$table);
     }
 
-    public function get()
+    public static function all()
+    {
+        $sql = "SELECT * FROM " . static::$table;
+        return static::executeQuery($sql);
+    }
+
+    public static function get()
     {
         $values = [];
         $sql = "SELECT * FROM " . static::$table;
 
-        if (!empty(static::$whereConditions) || !empty(static::$orWhereConditions)) {
-            $sql .= " WHERE ";
-            $whereConditions = static::$whereConditions;
-            $orWhereConditions = static::$orWhereConditions;
-            $conditions = array_merge($whereConditions, $orWhereConditions);
+        $whereClause = static::buildWhereConditions();
 
+        $sql .= $whereClause['sql'];
+        $values = $whereClause['values'];
+
+        return static::executeQuery($sql, $values);
+    }
+
+    public static function update($data)
+    {
+        $sql = "UPDATE " . static::$table . " SET ";
+        $setValues = [];
+
+        foreach ($data as $column => $value) {
+            $setValues[] = $column . " = ?";
+        }
+
+        $sql .= implode(", ", $setValues);
+
+        $whereClause = static::buildWhereConditions();
+
+        $sql .= $whereClause['sql'];
+        $values = array_merge(array_values($data), $whereClause['values']);
+
+        return static::execute($sql, $values);
+    }
+
+    public static function create($data = [])
+    {
+        $values = array_values($data);
+        $mappings = [];
+        $sql = "INSERT INTO " . static::$table . " (" . implode(",", array_keys($data)) . ") VALUES (";
+        foreach (array_values($data) as $value) {
+            $mappings[] = "?";
+        }
+        $sql .= implode(",", $mappings) . ") ";
+        return static::executeInsertId($sql, $values);
+    }
+
+    public static function find($id)
+    {
+        $sql = "SELECT * FROM " . static::$table . " WHERE id = ?";
+        return static::executeSingle($sql, [$id]);
+    }
+
+    public static function delete()
+    {
+        $sql = "DELETE FROM " . static::$table;
+
+        $whereClause = static::buildWhereConditions();
+
+        $sql .= $whereClause['sql'];
+        $values = $whereClause['values'];
+
+        return static::execute($sql, $values);
+    }
+
+    protected static function buildWhereConditions()
+    {
+        $whereConditions = static::$whereConditions;
+        $orWhereConditions = static::$orWhereConditions;
+        $conditions = array_merge($whereConditions, $orWhereConditions);
+        $whereSql = '';
+        $whereValues = [];
+
+        if (!empty($conditions)) {
+            $whereSql .= " WHERE ";
             foreach ($conditions as $key => $condition) {
-                $values[] = $condition['value'];
+                $whereValues[] = $condition['value'];
                 if ($key > 0) {
-                    $sql .= ($key < count($whereConditions)) ? " AND " : " OR ";
+                    $whereSql .= ($key < count($whereConditions)) ? " AND " : " OR ";
                 }
-                $sql .= $condition['column'] . ' ' . $condition['operator'] . ' ' . "?";
+                $whereSql .= $condition['column'] . ' ' . $condition['operator'] . ' ?';
             }
         }
 
-        $stmt = $this->getConnection()->prepare($sql);
-        $stmt->execute(array_values($values));
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
+        return [
+            'sql' => $whereSql,
+            'values' => $whereValues
+        ];
     }
 }

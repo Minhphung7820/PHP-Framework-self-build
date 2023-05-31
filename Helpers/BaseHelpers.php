@@ -26,21 +26,11 @@ if (!function_exists('config')) {
 if (!function_exists('router')) {
     function router($key)
     {
-        if (strpos($key, '.') !== false) {
-            $keys = explode('.', $key);
-            $routeFile = './Routers/' . $keys[0] . '/' . $keys[1] . '.php';
-            if (file_exists($routeFile)) {
-                $router = include $routeFile;
-                $value = $router;
-                return $value;
-            }
-        } else {
-            $routeFile = './Routers/' . $key . '.php';
-            if (file_exists($routeFile)) {
-                $router = include $routeFile;
-                $value = $router;
-                return $value;
-            }
+        $routeFile = './Routers/' . str_replace('.', '/', $key) . '.php';
+        if (file_exists($routeFile)) {
+            $router = include $routeFile;
+            $value = $router;
+            return $value;
         }
     }
 }
