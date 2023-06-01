@@ -8,14 +8,14 @@ use Providers\RouteServiceProvider;
 
 class Bootstrap
 {
-    protected $providers = [
+    protected $providersRegisted = [
         HelperServiceProvider::class,
         RouteServiceProvider::class,
         AppServiceProvider::class,
     ];
     public function __construct()
     {
-        foreach ($this->providers as $provider) {
+        foreach ($this->providersRegisted as $provider) {
             $runProvider = new $provider();
             $runProvider->boot();
         }

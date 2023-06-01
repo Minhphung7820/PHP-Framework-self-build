@@ -2,5 +2,9 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Bootstrap\Bootstrap;
-// khởi tạo servid  er provider
+
+/**
+ * This is the project start file
+ * where the providers are initialized.
+ */
 $bootstrap = new Bootstrap();
