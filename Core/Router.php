@@ -48,8 +48,8 @@ class Router implements RouterInterface
                     $params = [];
                 }
                 list($part, $controller, $method) = explode("@", $handler);
-                $controller = 'Http\\Controllers\\' . $part . '\\' . $controller;
-                $instanceController = app()->make($controller);
+                $controller = "Http\\Controllers\\" . ucfirst($part) . "\\" . $controller;
+                $instanceController = controller($controller);
                 $this->runMiddlewares($middlewares, $instanceController, $method, $params);
                 $this->routeAcitve = $namespace;
                 $flag404 = false;

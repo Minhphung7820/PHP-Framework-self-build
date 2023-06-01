@@ -1,11 +1,8 @@
 <?php
 
-use Http\Middlewares\CheckLogin;
-use Http\Middlewares\CheckRole;
-
 return [
     'middlewares' => [
-        CheckLogin::class,
-        CheckRole::class
+        \Http\Middlewares\CheckLogin::class,
+        \Http\Middlewares\CheckRole::class
     ]
 ];

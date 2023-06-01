@@ -1,8 +1,6 @@
 <?php
 
-use Http\Controllers\Frontend\ProductController;
-use Repositories\Interfaces\InterfaceProductRepository;
-use Repositories\ProductRepository;
+use function DI\string;
 
 if (!function_exists('config')) {
     function config($key)
@@ -85,10 +83,23 @@ if (!function_exists('app')) {
     {
         $containerBuilder = new \DI\ContainerBuilder();
 
-        $containerBuilder->addDefinitions([
-            InterfaceProductRepository::class => \DI\autowire(ProductRepository::class),
-        ]);
+        $containerBuilder->addDefinitions(config('container.binding_class'));
 
-        return $containerBuilder->build();
+        $container = $containerBuilder->build();
+        return $container;
+    }
+}
+
+if (!function_exists('controller')) {
+    function controller($controller)
+    {
+        $params_class = config('container.parameters_class');
+        $array_run = array();
+        foreach ($params_class as $className => $param) {
+            if ($controller === $className) {
+                $array_run = $param;
+            }
+        }
+        return app()->make($controller, $array_run);
     }
 }

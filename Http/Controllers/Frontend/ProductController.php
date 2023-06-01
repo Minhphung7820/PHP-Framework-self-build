@@ -11,6 +11,7 @@ class ProductController extends BaseController
 {
 
     protected $repoProd;
+    protected $a;
     public function __construct(InterfaceProductRepository $repoProd)
     {
         $this->repoProd = $repoProd;
@@ -29,6 +30,6 @@ class ProductController extends BaseController
     }
     public function all()
     {
-        $this->repoProd->getAll() . "<br>";
+        $this->repoProd->getAll();
     }
 }

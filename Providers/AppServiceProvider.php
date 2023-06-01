@@ -2,8 +2,8 @@
 
 namespace Providers;
 
-use Providers\BaseServiceProvider;
 use Http\Controllers\Frontend\ProductController;
+use Providers\BaseServiceProvider;
 
 class AppServiceProvider implements BaseServiceProvider
 {
