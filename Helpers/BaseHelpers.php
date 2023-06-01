@@ -1,4 +1,9 @@
 <?php
+
+use Http\Controllers\Frontend\ProductController;
+use Repositories\Interfaces\InterfaceProductRepository;
+use Repositories\ProductRepository;
+
 if (!function_exists('config')) {
     function config($key)
     {
@@ -73,5 +78,17 @@ if (!function_exists('response')) {
     function response()
     {
         return new \Supports\Http\Response();
+    }
+}
+if (!function_exists('app')) {
+    function app()
+    {
+        $containerBuilder = new \DI\ContainerBuilder();
+
+        $containerBuilder->addDefinitions([
+            InterfaceProductRepository::class => \DI\autowire(ProductRepository::class),
+        ]);
+
+        return $containerBuilder->build();
     }
 }

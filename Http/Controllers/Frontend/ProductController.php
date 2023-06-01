@@ -2,14 +2,19 @@
 
 namespace Http\Controllers\Frontend;
 
-use Core\ConnectDB;
 use Models\ProductsModel;
 use Http\Controllers\BaseController;
-use PDOException;
-use Supports\Facades\Logger;
+use Repositories\Interfaces\InterfaceProductRepository;
+
 
 class ProductController extends BaseController
 {
+
+    protected $repoProd;
+    public function __construct(InterfaceProductRepository $repoProd)
+    {
+        $this->repoProd = $repoProd;
+    }
     public function index()
     {
         echo "Đây là index";
@@ -24,9 +29,6 @@ class ProductController extends BaseController
     }
     public function all()
     {
-        $prods = ProductsModel::all();
-        return view('frontend.products.index', [
-            'prods' => $prods
-        ]);
+        $this->repoProd->getAll() . "<br>";
     }
 }

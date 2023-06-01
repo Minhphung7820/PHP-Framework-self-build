@@ -49,7 +49,7 @@ class Router implements RouterInterface
                 }
                 list($part, $controller, $method) = explode("@", $handler);
                 $controller = 'Http\\Controllers\\' . $part . '\\' . $controller;
-                $instanceController = new $controller();
+                $instanceController = app()->make($controller);
                 $this->runMiddlewares($middlewares, $instanceController, $method, $params);
                 $this->routeAcitve = $namespace;
                 $flag404 = false;
@@ -63,8 +63,7 @@ class Router implements RouterInterface
     protected function handleRoutNotFound()
     {
         if ($this->routeAcitve === '') {
-            header("HTTP/1.0 404 Not Found");
-            echo "Error 404: Page not found";
+            http_response_code(404);
         }
     }
 }

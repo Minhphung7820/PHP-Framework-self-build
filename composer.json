@@ -1,17 +1,20 @@
 {
     "require": {
         "predis/predis": "^2.1",
-        "nesbot/carbon": "^2.53.1"
+        "nesbot/carbon": "^2.53.1",
+        "php-di/php-di": "^6.0"
     },
     "autoload": {
         "psr-4": {
             "Core\\": "Core/",
+            "Exceptions\\": "Exceptions/",
             "Http\\": "Http/",
             "Providers\\": "Providers/",
             "Models\\": "Models/",
             "Routers\\": "Routers/",
             "Public\\": "Public/",
             "Supports\\": "Supports/",
+            "Repositories\\": "Repositories/",
             "Views\\": "Views/"
         }
     }
