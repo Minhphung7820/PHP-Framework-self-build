@@ -20,13 +20,16 @@ class ProductController extends BaseController
     {
         echo "Đây là index";
     }
-    public function detail($slug)
+    public function detail(ProductsModel $prodModel, $cate, $slug)
     {
-        $data = ProductsModel::where('slug', '=', $slug)->where('id', '=', 1)->first();
+        echo "Cate là : " . $cate . "<br>";
+        echo "Slug là : " . $slug . "<br>";
+        echo count($prodModel->all());
+        // $data = ProductsModel::where('id', '=', 1)->first();
 
-        return view('frontend.products.detail', [
-            'data' => $data
-        ]);
+        // return view('frontend.products.detail', [
+        //     'data' => $data
+        // ]);
     }
     public function all()
     {

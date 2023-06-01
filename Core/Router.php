@@ -3,6 +3,7 @@
 namespace Core;
 
 use Core\Interfaces\RouterInterface;
+use ReflectionMethod;
 
 class Router implements RouterInterface
 {
@@ -33,7 +34,8 @@ class Router implements RouterInterface
     {
         $flag404 = true;
         $url = $this->getUrl();
-        $params = [];
+        $paramsUrl = [];
+        $paramsMethos = [];
         foreach ($routes as $route => $handler) {
             $routeMapping = $route;
             $patternParamMapping = '|\{([\w-]+)\}|';
@@ -42,15 +44,23 @@ class Router implements RouterInterface
                 if (strpos($routeMapping, '{') !== false && strpos($routeMapping, '}') !== false) {
                     $countParams = substr_count($routeMapping, "{");
                     for ($i = 1; $i <= $countParams; $i++) {
-                        $params[] = $matches[$i];
+                        $paramsUrl[] = $matches[$i];
                     }
-                } else {
-                    $params = [];
                 }
                 list($part, $controller, $method) = explode("@", $handler);
                 $controller = "Http\\Controllers\\" . ucfirst($part) . "\\" . $controller;
                 $instanceController = makeClassController($controller);
-                $this->runMiddlewares($middlewares, $instanceController, $method, $params);
+                $reflectionMethod = new ReflectionMethod($controller, $method);
+                $paramsFunctionRuning = $reflectionMethod->getParameters();
+                foreach ($paramsFunctionRuning as $param) {
+                    if ($param->getType() !== null) {
+                        $instance = $param->getType()->getName();
+                        $paramsMethos[] = new $instance();
+                    } else {
+                        $paramsMethos[] = array_shift($paramsUrl);
+                    }
+                }
+                $this->runMiddlewares($middlewares, $instanceController, $method, $paramsMethos);
                 $this->routeAcitve = $namespace;
                 $flag404 = false;
                 break;
