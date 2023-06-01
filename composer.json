@@ -6,6 +6,7 @@
     },
     "autoload": {
         "psr-4": {
+            "Bootstrap\\": "Bootstrap/",
             "Core\\": "Core/",
             "Exceptions\\": "Exceptions/",
             "Http\\": "Http/",

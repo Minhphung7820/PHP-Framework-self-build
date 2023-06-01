@@ -49,7 +49,7 @@ class Router implements RouterInterface
                 }
                 list($part, $controller, $method) = explode("@", $handler);
                 $controller = "Http\\Controllers\\" . ucfirst($part) . "\\" . $controller;
-                $instanceController = controller($controller);
+                $instanceController = makeClassController($controller);
                 $this->runMiddlewares($middlewares, $instanceController, $method, $params);
                 $this->routeAcitve = $namespace;
                 $flag404 = false;
@@ -64,6 +64,7 @@ class Router implements RouterInterface
     {
         if ($this->routeAcitve === '') {
             http_response_code(404);
+            include('./Views/errors/404.html');
         }
     }
 }

@@ -91,7 +91,7 @@ if (!function_exists('app')) {
 }
 
 if (!function_exists('controller')) {
-    function controller($controller)
+    function makeClassController($controller)
     {
         $params_class = config('container.parameters_class');
         $array_run = array();

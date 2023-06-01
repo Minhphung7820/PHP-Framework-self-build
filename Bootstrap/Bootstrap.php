@@ -1,6 +1,6 @@
 <?php
 
-namespace Core;
+namespace Bootstrap;
 
 use Providers\AppServiceProvider;
 use Providers\HelperServiceProvider;
