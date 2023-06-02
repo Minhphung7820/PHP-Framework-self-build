@@ -11,29 +11,29 @@ class Router implements RouterInterface
     protected string $routeAcitve = '';
     public function loadRoute($namespace, $routes, $middleware = [])
     {
-        $this->handleRequest($namespace, $routes, $middleware);
+        $this->handle($namespace, $routes, $middleware);
     }
-    protected function getUrl()
+    protected function url()
     {
         return (strlen($_SERVER['REQUEST_URI']) > 1) ? rtrim($_SERVER['REQUEST_URI'], "/") : "/";
     }
-    protected function runMiddlewares($middlewares, $controller, $method, $params)
+    protected function run($middlewares, $controller, $method, $params)
     {
         $middleware = array_shift($middlewares);
         if ($middleware) {
             $middlewareInstance = new $middleware();
             $request = [$controller, $method, $params];
             $next = function ($request) use ($middlewares) {
-                return $this->runMiddlewares($middlewares, ...$request);
+                return $this->run($middlewares, ...$request);
             };
             return $middlewareInstance->handle($request, $next);
         }
         return call_user_func_array([$controller, $method], $params);
     }
-    protected function handleRequest($namespace, $routes, $middlewares = [])
+    protected function handle($namespace, $routes, $middlewares = [])
     {
         $flag404 = true;
-        $url = $this->getUrl();
+        $url = $this->url();
         $paramsUrl = [];
         $paramsMethos = [];
         foreach ($routes as $route => $handler) {
@@ -60,7 +60,7 @@ class Router implements RouterInterface
                         $paramsMethos[] = array_shift($paramsUrl);
                     }
                 }
-                $this->runMiddlewares($middlewares, $instanceController, $method, $paramsMethos);
+                $this->run($middlewares, $instanceController, $method, $paramsMethos);
                 $this->routeAcitve = $namespace;
                 $flag404 = false;
                 break;
@@ -70,7 +70,7 @@ class Router implements RouterInterface
             $this->routesNotFound[$namespace] = 0;
         }
     }
-    protected function handleRoutNotFound()
+    protected function NotFound()
     {
         if ($this->routeAcitve === '') {
             abort(404);
