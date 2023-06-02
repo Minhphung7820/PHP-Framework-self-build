@@ -7,7 +7,6 @@ use ReflectionMethod;
 
 class Router implements RouterInterface
 {
-    protected array $routesNotFound = [];
     protected string $routeAcitve = '';
     public function loadRoute($namespace, $routes, $middleware = [])
     {
@@ -32,7 +31,6 @@ class Router implements RouterInterface
     }
     protected function handle($namespace, $routes, $middlewares = [])
     {
-        $flag404 = true;
         $url = $this->url();
         $paramsUrl = [];
         $paramsMethod = [];
@@ -64,15 +62,10 @@ class Router implements RouterInterface
                         $paramsMethod[] = array_shift($paramsUrl);
                     }
                 }
-                // print_r($paramsMethod);
                 $this->run($middlewares, $instanceController, $method, $paramsMethod);
                 $this->routeAcitve = $namespace;
-                $flag404 = false;
                 break;
             }
-        }
-        if ($flag404) {
-            $this->routesNotFound[$namespace] = 0;
         }
     }
     protected function NotFound()
