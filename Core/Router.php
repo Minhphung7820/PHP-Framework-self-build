@@ -60,8 +60,6 @@ class Router implements RouterInterface
                         } else {
                             $paramsMethod[] = app()->make($instance);
                         }
-                    } elseif ($param->getType() !== null && $param->getType()->isBuiltin() !== false) {
-                        $paramsMethod[] = array_shift($paramsUrl);
                     } else {
                         $paramsMethod[] = array_shift($paramsUrl);
                     }
