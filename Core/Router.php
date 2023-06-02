@@ -35,7 +35,7 @@ class Router implements RouterInterface
         $flag404 = true;
         $url = $this->url();
         $paramsUrl = [];
-        $paramsMethos = [];
+        $paramsMethod = [];
         foreach ($routes as $route => $handler) {
             $routeMapping = $route;
             $patternParamMapping = '|\{([\w-]+)\}|';
@@ -53,18 +53,21 @@ class Router implements RouterInterface
                 $reflectionMethod = new ReflectionMethod($controller, $method);
                 $paramsFunctionRuning = $reflectionMethod->getParameters();
                 foreach ($paramsFunctionRuning as $param) {
-                    if ($param->getType() !== null) {
+                    if ($param->getType() !== null && $param->getType()->isBuiltin() === false) {
                         $instance = $param->getType()->getName();
                         if (interface_exists($instance)) {
-                            $paramsMethos[] = app()->make($instance);
+                            $paramsMethod[] = app()->make($instance);
                         } else {
-                            $paramsMethos[] = app()->make($instance);
+                            $paramsMethod[] = app()->make($instance);
                         }
+                    } elseif ($param->getType() !== null && $param->getType()->isBuiltin() !== false) {
+                        $paramsMethod[] = array_shift($paramsUrl);
                     } else {
-                        $paramsMethos[] = array_shift($paramsUrl);
+                        $paramsMethod[] = array_shift($paramsUrl);
                     }
                 }
-                $this->run($middlewares, $instanceController, $method, $paramsMethos);
+                // print_r($paramsMethod);
+                $this->run($middlewares, $instanceController, $method, $paramsMethod);
                 $this->routeAcitve = $namespace;
                 $flag404 = false;
                 break;

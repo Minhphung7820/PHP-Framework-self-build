@@ -5,7 +5,7 @@ namespace Http\Controllers\Frontend;
 use Models\ProductsModel;
 use Http\Controllers\BaseController;
 use Repositories\Interfaces\InterfaceProductRepository;
-
+use stdClass;
 
 class ProductController extends BaseController
 {
@@ -20,15 +20,15 @@ class ProductController extends BaseController
     {
         echo "Đây là index";
     }
-    public function detail(ProductsModel $prodModel, $cate, $slug)
+    public function detail(InterfaceProductRepository $repoProd, ProductsModel $prodModel, string $cate, string $slug)
     {
         echo "Cate là : " . $cate . "<br>";
         echo "Slug là : " . $slug . "<br>";
         echo $prodModel->where('id', '=', 1)->first()->name . "<br>";
-    }
-    public function all(ProductsModel $prodModel, InterfaceProductRepository $repoProd)
-    {
         echo count($prodModel->all()) . "<br>";
         $repoProd->getAll();
+    }
+    public function all($a, $b)
+    {
     }
 }
