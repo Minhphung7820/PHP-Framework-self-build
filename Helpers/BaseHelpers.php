@@ -122,3 +122,10 @@ if (!function_exists('abort')) {
         exit();
     }
 }
+
+if (!function_exists('cache')) {
+    function cache()
+    {
+        return new \Predis\Client();
+    }
+}

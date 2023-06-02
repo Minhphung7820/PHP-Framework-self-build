@@ -2,11 +2,18 @@
 
 namespace Exceptions;
 
-class BindindResolutionException
+use Exception;
+
+class BindindResolutionException extends Exception
 {
 
-    public function getMessage()
+    public function __construct($message = "", $code = 0, \Throwable $previous = null)
     {
-        echo "Không thể binhding";
+        parent::__construct($message, $code, $previous);
+    }
+
+    public function __toString()
+    {
+        return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
     }
 }

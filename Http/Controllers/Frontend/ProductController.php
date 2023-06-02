@@ -4,6 +4,7 @@ namespace Http\Controllers\Frontend;
 
 use Models\ProductsModel;
 use Http\Controllers\BaseController;
+use Predis\Client;
 use Repositories\Interfaces\InterfaceProductRepository;
 use stdClass;
 
