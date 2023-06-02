@@ -55,7 +55,11 @@ class Router implements RouterInterface
                 foreach ($paramsFunctionRuning as $param) {
                     if ($param->getType() !== null) {
                         $instance = $param->getType()->getName();
-                        $paramsMethos[] = new $instance();
+                        if (interface_exists($instance)) {
+                            $paramsMethos[] = app()->make($instance);
+                        } else {
+                            $paramsMethos[] = app()->make($instance);
+                        }
                     } else {
                         $paramsMethos[] = array_shift($paramsUrl);
                     }

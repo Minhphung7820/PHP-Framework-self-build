@@ -26,8 +26,9 @@ class ProductController extends BaseController
         echo "Slug là : " . $slug . "<br>";
         echo $prodModel->where('id', '=', 1)->first()->name . "<br>";
     }
-    public function all()
+    public function all(ProductsModel $prodModel, InterfaceProductRepository $repoProd)
     {
-        $this->repoProd->getAll();
+        echo count($prodModel->all()) . "<br>";
+        $repoProd->getAll();
     }
 }
