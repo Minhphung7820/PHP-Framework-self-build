@@ -24,12 +24,7 @@ class ProductController extends BaseController
     {
         echo "Cate là : " . $cate . "<br>";
         echo "Slug là : " . $slug . "<br>";
-        echo count($prodModel->all());
-        // $data = ProductsModel::where('id', '=', 1)->first();
-
-        // return view('frontend.products.detail', [
-        //     'data' => $data
-        // ]);
+        echo $prodModel->where('id', '=', 1)->first()->name . "<br>";
     }
     public function all()
     {

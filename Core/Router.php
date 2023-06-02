@@ -73,8 +73,7 @@ class Router implements RouterInterface
     protected function handleRoutNotFound()
     {
         if ($this->routeAcitve === '') {
-            http_response_code(404);
-            include('./Views/errors/404.html');
+            abort(404);
         }
     }
 }

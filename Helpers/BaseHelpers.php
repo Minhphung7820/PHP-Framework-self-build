@@ -1,7 +1,4 @@
 <?php
-
-use function DI\string;
-
 if (!function_exists('config')) {
     function config($key)
     {
@@ -26,6 +23,7 @@ if (!function_exists('config')) {
         return null;
     }
 }
+
 if (!function_exists('router')) {
     function router($key)
     {
@@ -37,6 +35,7 @@ if (!function_exists('router')) {
         }
     }
 }
+
 if (!function_exists('redirect')) {
     function redirect($url)
     {
@@ -60,24 +59,28 @@ if (!function_exists('view')) {
         throw new Exception("View [$viewPath] not found.");
     }
 }
+
 if (!function_exists('db')) {
     function db()
     {
         return new Core\ConnectDB();
     }
 }
+
 if (!function_exists('now')) {
     function now()
     {
         return new \Carbon\Carbon();
     }
 }
+
 if (!function_exists('response')) {
     function response()
     {
         return new \Supports\Http\Response();
     }
 }
+
 if (!function_exists('app')) {
     function app()
     {
@@ -101,5 +104,21 @@ if (!function_exists('controller')) {
             }
         }
         return app()->make($controller, $array_run);
+    }
+}
+
+if (!function_exists('request')) {
+    function request()
+    {
+        return new \Supports\Http\Request();
+    }
+}
+
+if (!function_exists('abort')) {
+    function abort($code)
+    {
+        http_response_code($code);
+        include('./Views/errors/' . $code . '.html');
+        exit();
     }
 }

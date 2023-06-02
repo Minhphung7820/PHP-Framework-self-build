@@ -2,8 +2,7 @@
 
 namespace Http\Controllers\Api;
 
-use Models\ProductsModel;
-use Supports\Facades\LogFacade;
+use Supports\Http\Request;
 
 class ProductController
 {
@@ -15,10 +14,8 @@ class ProductController
     {
         echo "Đây là trang api tất cả sản phẩm !";
     }
-    public function add()
+    public function add(Request $request)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            return response()->json(true);
-        }
+        return response()->json($request->all());
     }
 }
