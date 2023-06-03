@@ -11,7 +11,7 @@ class Bootstrap
         HelperServiceProvider::class,
         RouteServiceProvider::class,
     ];
-    public function __construct()
+    public function run()
     {
         foreach ($this->providersRegisted as $provider) {
             $runProvider = new $provider();

@@ -8,3 +8,4 @@ use Bootstrap\Bootstrap;
  * where the providers are initialized.
  */
 $bootstrap = new Bootstrap();
+$bootstrap->run();
