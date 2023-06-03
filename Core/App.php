@@ -14,12 +14,18 @@ class App
             $containerBuilder = new ContainerBuilder();
 
             self::$container = $containerBuilder->build();
+
+            /* Khai báo các Dependency injecttion tại đây  */
+
             self::$container->set(\Repositories\Interfaces\InterfaceProductRepository::class, function () {
                 return new \Repositories\ProductRepository();
             });
+
             self::$container->set(\Http\Controllers\Frontend\ProductController::class, function () {
-                return new \Http\Controllers\Frontend\ProductController(new \Repositories\ProductRepository(), "TAO NÈ MÀY", 2);
+                return new \Http\Controllers\Frontend\ProductController(new \Repositories\ProductRepository(), "DORAEMON", "NOBITA");
             });
+
+            /*  ==================================================== */
         }
 
         return self::$container;

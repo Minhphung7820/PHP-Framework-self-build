@@ -9,13 +9,7 @@
 </head>
 
 <body>
-    <h1>Tất cả sản phẩm</h1>
-    <?php
-
-    foreach ($datas as $key => $data) {
-        echo $data->name . "<br>";
-    }
-    ?>
+    <h2>Đây là trang liên hệ</h2>
 </body>
 
 </html>
