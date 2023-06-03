@@ -2,6 +2,7 @@
 
 namespace Http\Controllers\Api;
 
+use Models\ProductsModel;
 use Supports\Http\Request;
 
 class ProductController
@@ -16,6 +17,12 @@ class ProductController
     }
     public function add(Request $request)
     {
-        return response()->json($request->all());
+        $data = ProductsModel::find(1);
+        if (is_object($data)) {
+            $result = "Là Object";
+        } else {
+            $result = "Không phải Object";
+        }
+        return response()->json($result);
     }
 }

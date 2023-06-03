@@ -5,10 +5,11 @@ namespace Supports\Http;
 class Request
 {
     private $data;
-
+    private $method;
     public function __construct()
     {
         $this->data = $_POST;
+        $this->method = $_SERVER['REQUEST_METHOD'];
         return $this;
     }
 
@@ -28,5 +29,15 @@ class Request
     public function all()
     {
         return $this->data;
+    }
+
+    public function isMethod()
+    {
+        return  $this->method;
+    }
+
+    public function isAjaxRequest()
+    {
+        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
     }
 }
