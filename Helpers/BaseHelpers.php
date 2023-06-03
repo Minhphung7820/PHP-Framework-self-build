@@ -82,15 +82,7 @@ if (!function_exists('response')) {
 if (!function_exists('app')) {
     function app()
     {
-        $containerBuilder = new \DI\ContainerBuilder();
-        $container = $containerBuilder->build();
-        $container->set(\Repositories\Interfaces\InterfaceProductRepository::class, function () {
-            return new \Repositories\ProductRepository();
-        });
-        $container->set(\Http\Controllers\Frontend\ProductController::class, function () {
-            return new \Http\Controllers\Frontend\ProductController(new \Repositories\ProductRepository(), 1, 2);
-        });
-        return $container;
+        return \Core\App::getContainer();
     }
 }
 
