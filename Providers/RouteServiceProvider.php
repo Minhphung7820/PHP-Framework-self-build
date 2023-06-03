@@ -10,7 +10,7 @@ class RouteServiceProvider extends Router implements BaseServiceProvider
     {
         $this->loadRouteApi();
         $this->loadRouteWeb();
-        $this->NotFound();
+        $this->notFound();
     }
     public function loadRouteApi()
     {

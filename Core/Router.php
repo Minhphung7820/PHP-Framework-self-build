@@ -8,14 +8,14 @@ use ReflectionMethod;
 
 class Router implements RouterInterface
 {
-    protected string $routeAcitve = '';
+    protected string $routeActive = '';
     public function loadRoute($namespace, $routes, $middleware = [])
     {
         $this->handle($namespace, $routes, $middleware);
     }
-    protected function url()
+    protected function url(): string
     {
-        return (strlen($_SERVER['REQUEST_URI']) > 1) ? rtrim($_SERVER['REQUEST_URI'], "/") : "/";
+        return rtrim($_SERVER['REQUEST_URI'], '/') ?: '/';
     }
     protected function run($middlewares, $controller, $method, $params)
     {
@@ -42,8 +42,7 @@ class Router implements RouterInterface
             $routeRegex = '|^' . preg_replace($patternParamMapping, '([\w-]+)',  $routeMapping) . '$|';
             if (preg_match($routeRegex, $url, $matches)) {
                 if (strpos($routeMapping, '{') !== false && strpos($routeMapping, '}') !== false) {
-                    $countParams = substr_count($routeMapping, "{");
-                    for ($i = 1; $i <= $countParams; $i++) {
+                    for ($i = 1; $i <= count($matches) - 1; $i++) {
                         $paramsUrl[] = $matches[$i];
                     }
                 }
@@ -53,8 +52,8 @@ class Router implements RouterInterface
                     $controller = "Http\\Controllers\\" . ucfirst($part) . "\\" . $controller;
                     $instanceController = app()->make($controller);
                     $reflectionMethod = new ReflectionMethod($controller, $method);
-                    $paramsMethodRuning = $reflectionMethod->getParameters();
-                    foreach ($paramsMethodRuning as $param) {
+                    $paramsMethodRunning = $reflectionMethod->getParameters();
+                    foreach ($paramsMethodRunning as $param) {
                         if ($param->getType() !== null && $param->getType()->isBuiltin() === false) {
                             $instance = $param->getType()->getName();
                             if (interface_exists($instance)) {
@@ -70,8 +69,8 @@ class Router implements RouterInterface
                 } else {
                     // handle nếu $handler là dạng anonymous function
                     $reflectionFunction = new ReflectionFunction($handler);
-                    $paramsFunctionRuning = $reflectionFunction->getParameters();
-                    foreach ($paramsFunctionRuning as $param) {
+                    $paramsFunctionRunning = $reflectionFunction->getParameters();
+                    foreach ($paramsFunctionRunning as $param) {
                         if ($param->getType() !== null && $param->getType()->isBuiltin() === false) {
                             $instance = $param->getType()->getName();
                             if (interface_exists($instance)) {
@@ -85,14 +84,14 @@ class Router implements RouterInterface
                     }
                     $handler(...$paramsFunction);
                 }
-                $this->routeAcitve = $namespace;
+                $this->routeActive = $namespace;
                 break;
             }
         }
     }
-    protected function NotFound()
+    protected function notFound()
     {
-        if ($this->routeAcitve === '') {
+        if ($this->routeActive === '') {
             abort(404);
         }
     }
