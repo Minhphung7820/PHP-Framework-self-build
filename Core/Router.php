@@ -2,27 +2,27 @@
 
 namespace Core;
 
-use Core\Interfaces\RouterInterface;
+use Core\Base\BaseRouter;
 use ReflectionFunction;
 use ReflectionMethod;
 
-class Router implements RouterInterface
+class Router extends BaseRouter
 {
-    public string $routeActive = '';
+    protected string $routeActive = '';
 
-    public function loadRoutes($namespace, $routesWithMidleware, $middlewaresCover = [])
+    protected function loadRoutes($namespace, $routesWithMidleware, $middlewaresCover = [])
     {
         (count($middlewaresCover) > 0) ?
             $this->applyMiddlewareCover($middlewaresCover, $namespace, $routesWithMidleware) :
             $this->handleRoutes($namespace, $routesWithMidleware, $middlewaresCover);
     }
 
-    public function getUrl(): string
+    protected function getUrl(): string
     {
         return rtrim($_SERVER['REQUEST_URI'], '/') ?: '/';
     }
 
-    public function resolveParams($paramsHandle, $continute)
+    protected function resolveParams($paramsHandle, $continute)
     {
         $paramsToRun = [];
         foreach ($paramsHandle as $param) {
@@ -36,7 +36,7 @@ class Router implements RouterInterface
         return $paramsToRun;
     }
 
-    public function runMiddleware($classMiddleware, array $continute)
+    protected function runMiddleware($classMiddleware, array $continute)
     {
         $instanceMiddleware = new $classMiddleware();
         $paramsToRun = $this->resolveParams(
@@ -57,7 +57,7 @@ class Router implements RouterInterface
         return call_user_func_array([$controller, $method], $params);
     }
 
-    public function applyMiddlewareCover($middlewares = [], $namespace, $routes)
+    protected function applyMiddlewareCover($middlewares = [], $namespace, $routes)
     {
         // Kiểm tra xem có middleware cho toàn bộ file web không
         if (!empty($middlewares)) {
@@ -107,7 +107,7 @@ class Router implements RouterInterface
         }
     }
 
-    public function notFound()
+    protected function notFound()
     {
         if ($this->routeActive === '') {
             abort(404);

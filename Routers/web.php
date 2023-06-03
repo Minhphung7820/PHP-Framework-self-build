@@ -7,7 +7,7 @@ return [
     '/san-pham/{cate}/{slug}.html' => [
         'handler' => [\Http\Controllers\Frontend\ProductController::class, 'detail'],
         'middlewares' => [
-            \Http\Middlewares\CheckLogin::class,
+            // \Http\Middlewares\CheckLogin::class,
             \Http\Middlewares\CheckRole::class
         ]
     ],
