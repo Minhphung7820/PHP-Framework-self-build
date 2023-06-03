@@ -48,14 +48,12 @@ if (!function_exists('view')) {
     function view($viewPath, $data = [])
     {
         $filePath = './Views/' . str_replace('.', '/', $viewPath) . '.php';
-
         if (file_exists($filePath)) {
             ob_start();
             extract($data);
             include $filePath;
             return ob_get_contents();
         }
-
         throw new Exception("View [$viewPath] not found.");
     }
 }
@@ -85,25 +83,23 @@ if (!function_exists('app')) {
     function app()
     {
         $containerBuilder = new \DI\ContainerBuilder();
-
         $containerBuilder->addDefinitions(config('container.itf_class'));
-
         $container = $containerBuilder->build();
         return $container;
     }
 }
 
-if (!function_exists('controller')) {
+if (!function_exists('makeClass')) {
     function makeClass($class)
     {
-        $params_class = config('container.di');
-        $array_run = array();
-        foreach ($params_class as $className => $param) {
+        $injections = config('container.di');
+        $injectionsToRun = array();
+        foreach ($injections as $className => $injection) {
             if ($class === $className) {
-                $array_run = $param;
+                $injectionsToRun = $injection;
             }
         }
-        return app()->make($class, $array_run);
+        return app()->make($class, $injectionsToRun);
     }
 }
 
