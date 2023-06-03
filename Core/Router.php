@@ -9,30 +9,51 @@ use ReflectionMethod;
 class Router implements RouterInterface
 {
     protected string $routeActive = '';
-    public function loadRoute($namespace, $routes, $middleware = [])
+
+    public function loadRoutes($namespace, $routesWithMidleware, $middlewaresCover = [])
     {
-        $this->handle($namespace, $routes, $middleware);
+        $this->handleRoutes($namespace, $routesWithMidleware, $middlewaresCover);
     }
-    protected function url(): string
+
+    protected function getUrl(): string
     {
         return rtrim($_SERVER['REQUEST_URI'], '/') ?: '/';
     }
-    protected function run($middlewares, $controller, $method, $params)
+
+    protected function runRouteOnly($middlewares = [], $controller, $method, $params)
     {
         $middleware = array_shift($middlewares);
         if ($middleware) {
             $middlewareInstance = new $middleware();
             $request = [$controller, $method, $params];
             $next = function ($request) use ($middlewares) {
-                return $this->run($middlewares, ...$request);
+                return $this->runRouteOnly($middlewares, ...$request);
             };
             return $middlewareInstance->handle($request, $next);
         }
         return call_user_func_array([$controller, $method], $params);
     }
-    protected function handle($namespace, $routes, $middlewares = [])
+
+    protected function applyMiddlewareCover($middlewares = [], $namespace, $routes)
     {
-        $url = $this->url();
+        // Kiểm tra xem có middleware cho toàn bộ file web không
+        if (!empty($middlewares)) {
+            // Áp dụng middleware cho toàn bộ file web
+            foreach ($middlewares as $middleware) {
+                $middlewareInstance = new $middleware();
+                $request = [$namespace, $routes, $middlewares];
+                $next = function ($request) {
+                    return $this->handleRoutes(...$request);
+                };
+                return $middlewareInstance->handle($request, $next);
+            }
+        }
+    }
+
+    protected function handleRoutes($namespace, $routes, $middlewares = [])
+    {
+        $this->applyMiddlewareCover($middlewares, $namespace, $routes);
+        $url = $this->getUrl();
         $paramsUrl = [];
         $paramsMethod = [];
         $paramsFunction = [];
@@ -46,10 +67,9 @@ class Router implements RouterInterface
                         $paramsUrl[] = $matches[$i];
                     }
                 }
-                if (!is_callable($handler)) {
+                if (is_array($handler['handler'])) {
                     // handle nếu $handler là dạng folder_path@ClassController@method
-                    list($part, $controller, $method) = explode("@", $handler);
-                    $controller = "Http\\Controllers\\" . ucfirst($part) . "\\" . $controller;
+                    list($controller, $method) = $handler['handler'];
                     $instanceController = app()->make($controller);
                     $reflectionMethod = new ReflectionMethod($controller, $method);
                     $paramsMethodRunning = $reflectionMethod->getParameters();
@@ -65,10 +85,10 @@ class Router implements RouterInterface
                             $paramsMethod[] = array_shift($paramsUrl);
                         }
                     }
-                    $this->run($middlewares, $instanceController, $method, $paramsMethod);
+                    $this->runRouteOnly(array_key_exists('middlewares', $routes[$route]) ? $handler['middlewares'] : [], $instanceController, $method, $paramsMethod);
                 } else {
                     // handle nếu $handler là dạng anonymous function
-                    $reflectionFunction = new ReflectionFunction($handler);
+                    $reflectionFunction = new ReflectionFunction($handler['handler']);
                     $paramsFunctionRunning = $reflectionFunction->getParameters();
                     foreach ($paramsFunctionRunning as $param) {
                         if ($param->getType() !== null && $param->getType()->isBuiltin() === false) {
@@ -82,13 +102,14 @@ class Router implements RouterInterface
                             $paramsFunction[] = array_shift($paramsUrl);
                         }
                     }
-                    $handler(...$paramsFunction);
+                    $handler['handler'](...$paramsFunction);
                 }
                 $this->routeActive = $namespace;
                 break;
             }
         }
     }
+
     protected function notFound()
     {
         if ($this->routeActive === '') {

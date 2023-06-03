@@ -1,9 +1,24 @@
 <?php
 return [
-    '/' => 'frontend@HomeController@index',
-    '/san-pham/{cate}/{slug}.html' => 'frontend@ProductController@detail',
-    '/san-pham' => 'frontend@ProductController@all',
-    '/lien-he' => function () {
-        return view('frontend.contact.index');
-    }
+    '/' => [
+        'handler' => [\Http\Controllers\Frontend\HomeController::class, 'index'],
+
+    ],
+    '/san-pham/{cate}/{slug}.html' => [
+        'handler' => [\Http\Controllers\Frontend\ProductController::class, 'detail'],
+        'middlewares' => [
+            \Http\Middlewares\CheckLogin::class,
+        ]
+    ],
+    '/san-pham' => [
+        'handler' => [\Http\Controllers\Frontend\ProductController::class, 'all'],
+    ],
+    '/lien-he' => [
+        'handler' => function () {
+            return view('frontend.contact.index');
+        },
+        'middlewares' => [
+            \Http\Middlewares\CheckLogin::class,
+        ]
+    ]
 ];

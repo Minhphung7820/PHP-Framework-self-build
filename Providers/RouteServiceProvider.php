@@ -14,11 +14,13 @@ class RouteServiceProvider extends Router implements BaseServiceProvider
     }
     public function loadRouteApi()
     {
-        $this->loadRoute('api.user', router('api.user'), config('kernel.middlewares'));
-        $this->loadRoute('api.product', router('api.product'), config('kernel.middlewares'));
+        $this->loadRoutes('api.user', router('api.user'));
+        $this->loadRoutes('api.product', router('api.product'));
     }
     public function loadRouteWeb()
     {
-        $this->loadRoute('web', router('web'), config('kernel.middlewares'));
+        $this->loadRoutes('web', router('web'), [
+            // \Http\Middlewares\CheckLogin::class
+        ]);
     }
 }
