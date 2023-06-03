@@ -86,7 +86,7 @@ if (!function_exists('app')) {
     {
         $containerBuilder = new \DI\ContainerBuilder();
 
-        $containerBuilder->addDefinitions(config('container.binding_class'));
+        $containerBuilder->addDefinitions(config('container.itf_class'));
 
         $container = $containerBuilder->build();
         return $container;
@@ -94,16 +94,16 @@ if (!function_exists('app')) {
 }
 
 if (!function_exists('controller')) {
-    function makeClassController($controller)
+    function makeClass($class)
     {
-        $params_class = config('container.parameters_class');
+        $params_class = config('container.di');
         $array_run = array();
         foreach ($params_class as $className => $param) {
-            if ($controller === $className) {
+            if ($class === $className) {
                 $array_run = $param;
             }
         }
-        return app()->make($controller, $array_run);
+        return app()->make($class, $array_run);
     }
 }
 
