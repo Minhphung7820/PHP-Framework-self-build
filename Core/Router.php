@@ -47,7 +47,7 @@ class Router implements RouterInterface
                 }
                 list($part, $controller, $method) = explode("@", $handler);
                 $controller = "Http\\Controllers\\" . ucfirst($part) . "\\" . $controller;
-                $instanceController = makeClass($controller);
+                $instanceController = app()->make($controller);
                 $reflectionMethod = new ReflectionMethod($controller, $method);
                 $paramsFunctionRuning = $reflectionMethod->getParameters();
                 foreach ($paramsFunctionRuning as $param) {

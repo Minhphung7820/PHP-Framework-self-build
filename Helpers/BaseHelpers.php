@@ -83,23 +83,14 @@ if (!function_exists('app')) {
     function app()
     {
         $containerBuilder = new \DI\ContainerBuilder();
-        $containerBuilder->addDefinitions(config('container.itf_class'));
         $container = $containerBuilder->build();
+        $container->set(\Repositories\Interfaces\InterfaceProductRepository::class, function () {
+            return new \Repositories\ProductRepository();
+        });
+        $container->set(\Http\Controllers\Frontend\ProductController::class, function () {
+            return new \Http\Controllers\Frontend\ProductController(new \Repositories\ProductRepository(), 1, 2);
+        });
         return $container;
-    }
-}
-
-if (!function_exists('makeClass')) {
-    function makeClass($class)
-    {
-        $injections = config('container.di');
-        $injectionsToRun = array();
-        foreach ($injections as $className => $injection) {
-            if ($class === $className) {
-                $injectionsToRun = $injection;
-            }
-        }
-        return app()->make($class, $injectionsToRun);
     }
 }
 
