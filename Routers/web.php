@@ -8,6 +8,7 @@ return [
         'handler' => [\Http\Controllers\Frontend\ProductController::class, 'detail'],
         'middlewares' => [
             \Http\Middlewares\CheckLogin::class,
+            \Http\Middlewares\CheckRole::class
         ]
     ],
     '/san-pham' => [

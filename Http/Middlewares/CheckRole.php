@@ -2,13 +2,13 @@
 
 namespace Http\Middlewares;
 
-class CheckRole extends BaseMiddleware
+class CheckRole
 {
-    public function handle($request, $next)
+    public function handle($sendRequest, $next)
     {
-        if (10 - 5 === 6) {
+        if (10 - 9 === 6) {
             return redirect('https://fptshop.com.vn/');
         }
-        return $next($request);
+        return $next($sendRequest);
     }
 }

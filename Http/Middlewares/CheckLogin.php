@@ -2,14 +2,12 @@
 
 namespace Http\Middlewares;
 
-use Http\Middlewares\BaseMiddleware;
-
-class CheckLogin extends BaseMiddleware
+class CheckLogin
 {
-    public function handle($request, $next)
+    public function handle($sendRequest, $next)
     {
-        if (1 + 4 === 2) {
-            return $next($request);
+        if (1 + 1 === 2) {
+            return $next($sendRequest);
         }
         return redirect('https://www.thegioididong.com/');
     }

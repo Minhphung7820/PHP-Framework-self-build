@@ -68,7 +68,7 @@ class Router implements RouterInterface
                     }
                 }
                 if (is_array($handler['handler'])) {
-                    // handle nếu $handler là dạng folder_path@ClassController@method
+                    // handle nếu $handler là dạng [\Http\Controllers\Frontend\HomeController::class, 'index']
                     list($controller, $method) = $handler['handler'];
                     $instanceController = app()->make($controller);
                     $reflectionMethod = new ReflectionMethod($controller, $method);
