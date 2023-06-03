@@ -8,19 +8,21 @@ use ReflectionMethod;
 
 class Router implements RouterInterface
 {
-    protected string $routeActive = '';
+    public string $routeActive = '';
 
     public function loadRoutes($namespace, $routesWithMidleware, $middlewaresCover = [])
     {
-        $this->handleRoutes($namespace, $routesWithMidleware, $middlewaresCover);
+        (count($middlewaresCover) > 0) ?
+            $this->applyMiddlewareCover($middlewaresCover, $namespace, $routesWithMidleware) :
+            $this->handleRoutes($namespace, $routesWithMidleware, $middlewaresCover);
     }
 
-    protected function getUrl(): string
+    public function getUrl(): string
     {
         return rtrim($_SERVER['REQUEST_URI'], '/') ?: '/';
     }
 
-    protected function resolveParams($paramsHandle, $continute)
+    public function resolveParams($paramsHandle, $continute)
     {
         $paramsToRun = [];
         foreach ($paramsHandle as $param) {
@@ -34,7 +36,7 @@ class Router implements RouterInterface
         return $paramsToRun;
     }
 
-    protected function runMiddleware($classMiddleware, array $continute)
+    public function runMiddleware($classMiddleware, array $continute)
     {
         $instanceMiddleware = new $classMiddleware();
         $paramsToRun = $this->resolveParams(
@@ -44,37 +46,32 @@ class Router implements RouterInterface
         return call_user_func_array([$instanceMiddleware, 'handle'], $paramsToRun);
     }
 
-    protected function runRouteOnly($middlewares = [], $controller, $method, $params)
+    public function runRouteOnly($middlewares = [], $controller, $method, $params)
     {
         $middleware = array_shift($middlewares);
         if ($middleware) {
             $request = [$controller, $method, $params];
-            $next = function ($request) use ($middlewares) {
-                return $this->runRouteOnly($middlewares, ...$request);
-            };
+            $next = new \Supports\Facades\NextClosure($middlewares, $this, 'ONLY');
             return $this->runMiddleware($middleware, [$request, $next]);
         }
         return call_user_func_array([$controller, $method], $params);
     }
 
-    protected function applyMiddlewareCover($middlewares = [], $namespace, $routes)
+    public function applyMiddlewareCover($middlewares = [], $namespace, $routes)
     {
         // Kiểm tra xem có middleware cho toàn bộ file web không
         if (!empty($middlewares)) {
             // Áp dụng middleware cho toàn bộ file web
             foreach ($middlewares as $middleware) {
                 $request = [$namespace, $routes, $middlewares];
-                $next = function ($request) {
-                    return $this->handleRoutes(...$request);
-                };
+                $next = new \Supports\Facades\NextClosure([], $this, 'COVER');
                 return $this->runMiddleware($middleware, [$request, $next]);
             }
         }
     }
 
-    protected function handleRoutes($namespace, $routes, $middlewares = [])
+    public function handleRoutes($namespace, $routes)
     {
-        $this->applyMiddlewareCover($middlewares, $namespace, $routes);
         $url = $this->getUrl();
         $paramsUrl = [];
         $paramsMethod = [];
@@ -110,7 +107,7 @@ class Router implements RouterInterface
         }
     }
 
-    protected function notFound()
+    public function notFound()
     {
         if ($this->routeActive === '') {
             abort(404);
