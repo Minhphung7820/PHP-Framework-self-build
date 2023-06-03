@@ -20,16 +20,39 @@ class Router implements RouterInterface
         return rtrim($_SERVER['REQUEST_URI'], '/') ?: '/';
     }
 
+    protected function resolveParams($paramsHandle, $continute)
+    {
+        $paramsToRun = [];
+        foreach ($paramsHandle as $param) {
+            if ($param->getType() !== null && $param->getType()->isBuiltin() === false) {
+                $instance = $param->getType()->getName();
+                $paramsToRun[] = app()->make($instance);
+            } else {
+                $paramsToRun[] = array_shift($continute);
+            }
+        }
+        return $paramsToRun;
+    }
+
+    protected function runMiddleware($classMiddleware, array $continute)
+    {
+        $instanceMiddleware = new $classMiddleware();
+        $paramsToRun = $this->resolveParams(
+            (new ReflectionMethod($classMiddleware, 'handle'))->getParameters(),
+            $continute
+        );
+        return call_user_func_array([$instanceMiddleware, 'handle'], $paramsToRun);
+    }
+
     protected function runRouteOnly($middlewares = [], $controller, $method, $params)
     {
         $middleware = array_shift($middlewares);
         if ($middleware) {
-            $middlewareInstance = new $middleware();
             $request = [$controller, $method, $params];
             $next = function ($request) use ($middlewares) {
                 return $this->runRouteOnly($middlewares, ...$request);
             };
-            return $middlewareInstance->handle($request, $next);
+            return $this->runMiddleware($middleware, [$request, $next]);
         }
         return call_user_func_array([$controller, $method], $params);
     }
@@ -40,12 +63,11 @@ class Router implements RouterInterface
         if (!empty($middlewares)) {
             // Áp dụng middleware cho toàn bộ file web
             foreach ($middlewares as $middleware) {
-                $middlewareInstance = new $middleware();
                 $request = [$namespace, $routes, $middlewares];
                 $next = function ($request) {
                     return $this->handleRoutes(...$request);
                 };
-                return $middlewareInstance->handle($request, $next);
+                return $this->runMiddleware($middleware, [$request, $next]);
             }
         }
     }
@@ -73,35 +95,13 @@ class Router implements RouterInterface
                     $instanceController = app()->make($controller);
                     $reflectionMethod = new ReflectionMethod($controller, $method);
                     $paramsMethodRunning = $reflectionMethod->getParameters();
-                    foreach ($paramsMethodRunning as $param) {
-                        if ($param->getType() !== null && $param->getType()->isBuiltin() === false) {
-                            $instance = $param->getType()->getName();
-                            if (interface_exists($instance)) {
-                                $paramsMethod[] = app()->make($instance);
-                            } else {
-                                $paramsMethod[] = app()->make($instance);
-                            }
-                        } else {
-                            $paramsMethod[] = array_shift($paramsUrl);
-                        }
-                    }
+                    $paramsMethod = $this->resolveParams($paramsMethodRunning, $paramsUrl);
                     $this->runRouteOnly(array_key_exists('middlewares', $routes[$route]) ? $handler['middlewares'] : [], $instanceController, $method, $paramsMethod);
                 } else {
                     // handle nếu $handler là dạng anonymous function
                     $reflectionFunction = new ReflectionFunction($handler['handler']);
                     $paramsFunctionRunning = $reflectionFunction->getParameters();
-                    foreach ($paramsFunctionRunning as $param) {
-                        if ($param->getType() !== null && $param->getType()->isBuiltin() === false) {
-                            $instance = $param->getType()->getName();
-                            if (interface_exists($instance)) {
-                                $paramsFunction[] = app()->make($instance);
-                            } else {
-                                $paramsFunction[] = app()->make($instance);
-                            }
-                        } else {
-                            $paramsFunction[] = array_shift($paramsUrl);
-                        }
-                    }
+                    $paramsFunction = $this->resolveParams($paramsFunctionRunning, $paramsUrl);
                     $handler['handler'](...$paramsFunction);
                 }
                 $this->routeActive = $namespace;
