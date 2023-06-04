@@ -12,9 +12,11 @@ class Router extends BaseRouter
 
     protected function loadRoutes($namespace, $routesWithMidleware, $middlewaresCover = [])
     {
-        (count($middlewaresCover) > 0) ?
-            $this->applyMiddlewareCover($middlewaresCover, $namespace, $routesWithMidleware) :
-            $this->handleRoutes($namespace, $routesWithMidleware, $middlewaresCover);
+        if (count($middlewaresCover) > 0) {
+            $this->applyMiddlewareCover($middlewaresCover, $namespace, $routesWithMidleware);
+        } else {
+            $this->handleRoutes($namespace, $routesWithMidleware);
+        }
     }
 
     protected function getUrl(): string
@@ -62,11 +64,13 @@ class Router extends BaseRouter
         // Kiểm tra xem có middleware cho toàn bộ file web không
         if (!empty($middlewares)) {
             // Áp dụng middleware cho toàn bộ file web
+            $results = [];
             foreach ($middlewares as $middleware) {
                 $request = [$namespace, $routes, $middlewares];
                 $next = new \Supports\Facades\NextClosure([], $this, 'COVER');
-                return $this->runMiddleware($middleware, [$request, $next]);
+                $results[] = $this->runMiddleware($middleware, [$request, $next]);
             }
+            return $results;
         }
     }
 
