@@ -1,6 +1,6 @@
 <?php
 return [
-    'middlewares' => ['checkLogin', 'checkRole'],
+    'middlewares' => [],
     'name' => 'web',
     'routes' => [
         '/' => [
@@ -9,10 +9,11 @@ return [
         ],
         '/san-pham/{cate}/{slug}.html' => [
             'handler' => [\Http\Controllers\Frontend\ProductController::class, 'detail'],
-            // 'middlewares' => ['checkLogin', 'checkRole'],
+            'middlewares' => ['checkLogin', 'checkRole'],
         ],
         '/san-pham' => [
             'handler' => [\Http\Controllers\Frontend\ProductController::class, 'all'],
+            'middlewares' => ['checkLogin:1:1', 'checkRole:4'],
         ],
         '/lien-he' => [
             'handler' => function () {

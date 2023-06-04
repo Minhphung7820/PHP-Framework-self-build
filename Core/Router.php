@@ -36,13 +36,18 @@ class Router extends BaseRouter
 
     protected function handleMiddleware($middleware)
     {
+        $arguments = explode(":", rtrim($middleware, ":"));
+        unset($arguments[0]);
         $className = classNameMiddleware($middleware);
         $instanceMiddleware = new $className();
-        $request = true;
+        $request = new \Supports\Http\Request();
+        $request->NEXT_REQUEST = true;
         $next = function ($request) {
-            return $request;
+            return $request->NEXT_REQUEST;
         };
-        $result = $instanceMiddleware->handle($next, $request);
+        $paramsMain = [$next, $request];
+        $params = array_merge($paramsMain, $arguments);
+        $result = $instanceMiddleware->handle(...$params);
         return ($result === true) ? $result : false;
     }
 
@@ -68,6 +73,7 @@ class Router extends BaseRouter
         }
         return $flag;
     }
+
     protected function runRoutes()
     {
         $paramsUrl = [];
@@ -89,6 +95,7 @@ class Router extends BaseRouter
                                 $paramsUrl[] = $matches[$i];
                             }
                         }
+                        $allMiddlewaresSingleRoutePassed = $this->shouldContinueRequest(isset($handler['middlewares']) ? $handler['middlewares'] : []);
                         if (is_array($handler['handler'])) {
                             // handle nếu $handler là dạng [\Http\Controllers\Frontend\HomeController::class, 'index']
                             list($controller, $method) = $handler['handler'];
@@ -96,13 +103,17 @@ class Router extends BaseRouter
                             $reflectionMethod = new ReflectionMethod($controller, $method);
                             $paramsMethodRunning = $reflectionMethod->getParameters();
                             $paramsMethod = $this->resolveParams($paramsMethodRunning, $paramsUrl);
-                            call_user_func_array([$instanceController, $method], $paramsMethod);
+                            if ($allMiddlewaresSingleRoutePassed) {
+                                call_user_func_array([$instanceController, $method], $paramsMethod);
+                            }
                         } else {
                             // handle nếu $handler là dạng anonymous function
                             $reflectionFunction = new ReflectionFunction($handler['handler']);
                             $paramsFunctionRunning = $reflectionFunction->getParameters();
                             $paramsFunction = $this->resolveParams($paramsFunctionRunning, $paramsUrl);
-                            $handler['handler'](...$paramsFunction);
+                            if ($allMiddlewaresSingleRoutePassed) {
+                                $handler['handler'](...$paramsFunction);
+                            }
                         }
                         break;
                     }
