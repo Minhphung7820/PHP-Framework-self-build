@@ -2,15 +2,15 @@
 
 namespace Http\Middlewares;
 
-use Supports\Http\Request;
+use Closure;
 
 class CheckLogin
 {
-    public function handle(Request $request, $sendRequest, $next)
+    public function handle(Closure $next, $request)
     {
-        if (1 + 7 === 2) {
-            return $next($sendRequest);
+        if (1 + 1 === 2) {
+            return response()->json("CC");
         }
-        return redirect('https://www.thegioididong.com/');
+        return $next($request);
     }
 }

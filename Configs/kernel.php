@@ -2,7 +2,7 @@
 
 return [
     'middlewares' => [
-        \Http\Middlewares\CheckLogin::class,
-        \Http\Middlewares\CheckRole::class
+        'checkLogin' =>  \Http\Middlewares\CheckLogin::class,
+        'checkRole' => \Http\Middlewares\CheckRole::class
     ]
 ];

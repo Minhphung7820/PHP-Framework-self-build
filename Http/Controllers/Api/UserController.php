@@ -4,13 +4,12 @@ namespace Http\Controllers\Api;
 
 class UserController
 {
-    public function index()
+    public function detail($id)
     {
-        echo "Đây là api user index";
+        echo "Đây là trang api chi tuser với id là : " . $id;
     }
-
-    public function test($id)
+    public function all()
     {
-        echo "Đây là api user test có id là : " . $id;
+        echo "Đây là trang api tất cả users !";
     }
 }

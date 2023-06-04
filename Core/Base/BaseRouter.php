@@ -4,5 +4,5 @@ namespace Core\Base;
 
 abstract class BaseRouter
 {
-    abstract protected function loadRoutes($namespace, $routesWithMidleware, $middleware = []);
+    abstract protected function runRoutes();
 }

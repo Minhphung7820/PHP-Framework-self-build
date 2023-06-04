@@ -108,3 +108,10 @@ if (!function_exists('cache')) {
         return new \Predis\Client();
     }
 }
+
+if (!function_exists('classMiddleware')) {
+    function classNameMiddleware($name)
+    {
+        return config('kernel.middlewares')[explode(":", $name)[0]];
+    }
+}

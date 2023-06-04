@@ -8,20 +8,16 @@ use ReflectionMethod;
 
 class Router extends BaseRouter
 {
-    protected string $routeActive = '';
-
-    protected function loadRoutes($namespace, $routesWithMidleware, $middlewaresCover = [])
-    {
-        if (count($middlewaresCover) > 0) {
-            $this->applyMiddlewareCover($middlewaresCover, $namespace, $routesWithMidleware);
-        } else {
-            $this->handleRoutes($namespace, $routesWithMidleware);
-        }
-    }
+    protected array $routes = [];
 
     protected function getUrl(): string
     {
         return rtrim($_SERVER['REQUEST_URI'], '/') ?: '/';
+    }
+
+    protected function register(array $routes): void
+    {
+        $this->routes[$routes['name']] = $routes;
     }
 
     protected function resolveParams($paramsHandle, array $continue)
@@ -38,83 +34,80 @@ class Router extends BaseRouter
         return $paramsToRun;
     }
 
-    protected function runMiddleware($classMiddleware, array $continue)
+    protected function handleMiddleware($middleware)
     {
-        $instanceMiddleware = new $classMiddleware();
-        $paramsToRun = $this->resolveParams(
-            (new ReflectionMethod($classMiddleware, 'handle'))->getParameters(),
-            $continue
-        );
-        return call_user_func_array([$instanceMiddleware, 'handle'], $paramsToRun);
+        $className = classNameMiddleware($middleware);
+        $instanceMiddleware = new $className();
+        $request = true;
+        $next = function ($request) {
+            return $request;
+        };
+        $result = $instanceMiddleware->handle($next, $request);
+        return ($result === true) ? $result : false;
     }
 
-    public function runRouteOnly($middlewares = [], $controller, $method, $params)
+    protected function shouldContinueRequest(array $middlewares): bool
     {
-        $middleware = array_shift($middlewares);
-        if ($middleware) {
-            $request = [$controller, $method, $params];
-            $next = new \Supports\Facades\NextClosure($middlewares, $this, 'ONLY');
-            return $this->runMiddleware($middleware, [$request, $next]);
-        }
-        return call_user_func_array([$controller, $method], $params);
-    }
-
-    protected function applyMiddlewareCover($middlewares = [], $namespace, $routes)
-    {
-        // Kiểm tra xem có middleware cho toàn bộ file web không
-        if (!empty($middlewares)) {
-            // Áp dụng middleware cho toàn bộ file web
-            $results = [];
-            foreach ($middlewares as $middleware) {
-                $request = [$namespace, $routes, $middlewares];
-                $next = new \Supports\Facades\NextClosure([], $this, 'COVER');
-                $results[] = $this->runMiddleware($middleware, [$request, $next]);
+        // Kiểm tra xem route có middleware không
+        $flag = true;
+        $arrSuccess = [];
+        if (isset($middlewares)) {
+            $arrResults = [];
+            foreach ($middlewares as  $middleware) {
+                $arrResults[] = $this->handleMiddleware($middleware);
             }
-            return $results;
+            foreach ($arrResults as $result) {
+                if ($result) {
+                    $arrSuccess[] = 1;
+                }
+            }
+            // Nếu tất cả các middlewa không thỏa thì $flag = false
+            if (count($arrSuccess) !== count($middlewares)) {
+                $flag = false;
+            }
         }
+        return $flag;
     }
-
-    public function handleRoutes($namespace, $routes)
+    protected function runRoutes()
     {
-        $url = $this->getUrl();
         $paramsUrl = [];
         $paramsMethod = [];
         $paramsFunction = [];
-        foreach ($routes as $route => $handler) {
-            $routeMapping = $route;
-            $patternParamMapping = '|\{([\w-]+)\}|';
-            $routeRegex = '|^' . preg_replace($patternParamMapping, '([\w-]+)',  $routeMapping) . '$|';
-            if (preg_match($routeRegex, $url, $matches)) {
-                if (strpos($routeMapping, '{') !== false && strpos($routeMapping, '}') !== false) {
-                    for ($i = 1; $i <= count($matches) - 1; $i++) {
-                        $paramsUrl[] = $matches[$i];
+        foreach ($this->routes as $nameRouter => $router) {
+            foreach ($router['routes'] as $route => $handler) {
+                // Xử lý route như trước
+                $routeMapping = $route;
+                $patternParamMapping = '|\{([\w-]+)\}|';
+                $routeRegex = '|^' . preg_replace($patternParamMapping, '([\w-]+)',  $routeMapping) . '$|';
+                if (preg_match($routeRegex, $this->getUrl(), $matches)) {
+
+                    // Nếu thỏa hết tất cả middleware thì tiến hành sử lý các route bên trong
+                    $allMiddlewaresFilePassed = $this->shouldContinueRequest(isset($router['middlewares']) ? $router['middlewares'] : []);
+                    if ($allMiddlewaresFilePassed) {
+                        if (strpos($routeMapping, '{') !== false && strpos($routeMapping, '}') !== false) {
+                            for ($i = 1; $i <= count($matches) - 1; $i++) {
+                                $paramsUrl[] = $matches[$i];
+                            }
+                        }
+                        if (is_array($handler['handler'])) {
+                            // handle nếu $handler là dạng [\Http\Controllers\Frontend\HomeController::class, 'index']
+                            list($controller, $method) = $handler['handler'];
+                            $instanceController = app()->make($controller);
+                            $reflectionMethod = new ReflectionMethod($controller, $method);
+                            $paramsMethodRunning = $reflectionMethod->getParameters();
+                            $paramsMethod = $this->resolveParams($paramsMethodRunning, $paramsUrl);
+                            call_user_func_array([$instanceController, $method], $paramsMethod);
+                        } else {
+                            // handle nếu $handler là dạng anonymous function
+                            $reflectionFunction = new ReflectionFunction($handler['handler']);
+                            $paramsFunctionRunning = $reflectionFunction->getParameters();
+                            $paramsFunction = $this->resolveParams($paramsFunctionRunning, $paramsUrl);
+                            $handler['handler'](...$paramsFunction);
+                        }
+                        break;
                     }
                 }
-                if (is_array($handler['handler'])) {
-                    // handle nếu $handler là dạng [\Http\Controllers\Frontend\HomeController::class, 'index']
-                    list($controller, $method) = $handler['handler'];
-                    $instanceController = app()->make($controller);
-                    $reflectionMethod = new ReflectionMethod($controller, $method);
-                    $paramsMethodRunning = $reflectionMethod->getParameters();
-                    $paramsMethod = $this->resolveParams($paramsMethodRunning, $paramsUrl);
-                    $this->runRouteOnly(array_key_exists('middlewares', $routes[$route]) ? $handler['middlewares'] : [], $instanceController, $method, $paramsMethod);
-                } else {
-                    // handle nếu $handler là dạng anonymous function
-                    $reflectionFunction = new ReflectionFunction($handler['handler']);
-                    $paramsFunctionRunning = $reflectionFunction->getParameters();
-                    $paramsFunction = $this->resolveParams($paramsFunctionRunning, $paramsUrl);
-                    $handler['handler'](...$paramsFunction);
-                }
-                $this->routeActive = $namespace;
-                break;
             }
-        }
-    }
-
-    protected function notFound()
-    {
-        if ($this->routeActive === '') {
-            abort(404);
         }
     }
 }
