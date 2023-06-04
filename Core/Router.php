@@ -22,7 +22,7 @@ class Router extends BaseRouter
         return rtrim($_SERVER['REQUEST_URI'], '/') ?: '/';
     }
 
-    protected function resolveParams($paramsHandle, $continute)
+    protected function resolveParams($paramsHandle, array $continue)
     {
         $paramsToRun = [];
         foreach ($paramsHandle as $param) {
@@ -30,18 +30,18 @@ class Router extends BaseRouter
                 $instance = $param->getType()->getName();
                 $paramsToRun[] = app()->make($instance);
             } else {
-                $paramsToRun[] = array_shift($continute);
+                $paramsToRun[] = array_shift($continue);
             }
         }
         return $paramsToRun;
     }
 
-    protected function runMiddleware($classMiddleware, array $continute)
+    protected function runMiddleware($classMiddleware, array $continue)
     {
         $instanceMiddleware = new $classMiddleware();
         $paramsToRun = $this->resolveParams(
             (new ReflectionMethod($classMiddleware, 'handle'))->getParameters(),
-            $continute
+            $continue
         );
         return call_user_func_array([$instanceMiddleware, 'handle'], $paramsToRun);
     }
