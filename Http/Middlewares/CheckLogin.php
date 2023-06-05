@@ -3,11 +3,13 @@
 namespace Http\Middlewares;
 
 use Closure;
+use Models\ProductsModel;
+use Repositories\Interfaces\InterfaceProductRepository;
 use Supports\Http\Request;
 
 class CheckLogin
 {
-    public function handle(Closure $next, Request $request, $a, $b)
+    public function handle(ProductsModel $productsModel, InterfaceProductRepository $repoProd, Closure $next, Request $request, $a, $b)
     {
         if ($b + $a === 2) {
             return response()->json("CC");

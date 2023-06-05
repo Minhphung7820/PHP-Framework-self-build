@@ -6,6 +6,8 @@ use Core\Base\BaseRouter;
 use ReflectionFunction;
 use ReflectionMethod;
 
+use function DI\get;
+
 class Router extends BaseRouter
 {
     protected array $routes = [];
@@ -42,40 +44,22 @@ class Router extends BaseRouter
         $instanceMiddleware = new $className();
         $request = new \Supports\Http\Request();
         $request->NEXT_REQUEST = true;
-        $next = function ($request) {
-            return $request->NEXT_REQUEST;
-        };
-        $paramsMain = [$next, $request];
-        $params = array_merge($paramsMain, $arguments);
         $sortedParams = [];
         $reflection = new ReflectionMethod($className, 'handle');
         $parameters = $reflection->getParameters();
         // Duyệt qua từng tham số trong hàm handle
-        foreach ($parameters as $parameter) {
-            $paramType = $parameter->getType();
+        foreach ($parameters as $key => $parameter) {
             // Kiểm tra xem tham số có kiểu đã được định nghĩa hay không
-            if ($paramType !== null) {
-                $paramType = $paramType->getName();
-
-                // Duyệt qua từng phần tử trong mảng $params
-                foreach ($params as $key => $param) {
-                    if ((is_object($param) && get_class($param) === $paramType) || gettype($param) === $paramType) {
-                        // Nếu kiểu của phần tử trùng khớp với loại tham số
-                        $sortedParams[$key] = $param;
-                        unset($params[$key]);
-                        break;
-                    }
+            if ($parameter->getType() !== null && $parameter->getType()->isBuiltin() === false) {
+                if ($parameter->getType()->getName() === \Supports\Http\Request::class) {
+                    $sortedParams[$key] = $request;
+                } else {
+                    $sortedParams[$key] = app()->make($parameter->getType()->getName());
                 }
+            } else {
+                $sortedParams[$key] = array_shift($arguments);
             }
         }
-        // Nếu tham số ở dạng thường thì lấy param từ $arguments ví dụ name_middleware:param1:param2
-        foreach ($parameters as $index => $parameter) {
-            if (!isset($sortedParams[$index])) {
-                $sortedParams[$index] = array_shift($arguments);
-            }
-        }
-        // Ghép phần tử còn lại vào cuối mảng $sortedParams
-        $sortedParams = array_merge($sortedParams, $params);
         $result = $instanceMiddleware->handle(...$sortedParams);
         return ($result === true) ? $result : false;
     }

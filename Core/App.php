@@ -21,6 +21,12 @@ class App
                 return new \Repositories\ProductRepository();
             });
 
+            self::$container->set(\Closure::class, function () {
+                return function (\Supports\Http\Request $request) {
+                    return $request->NEXT_REQUEST;
+                };
+            });
+
             self::$container->set(\Http\Controllers\Frontend\ProductController::class, function () {
                 return new \Http\Controllers\Frontend\ProductController(new \Repositories\ProductRepository(), "DORAEMON", "NOBITA");
             });
