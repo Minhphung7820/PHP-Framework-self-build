@@ -12,7 +12,7 @@ class CheckLogin
     public function handle(ProductsModel $productsModel, InterfaceProductRepository $repoProd, Closure $next, Request $request, $a, $b)
     {
         if ($b + $a === 2) {
-            return response()->json(['success' => false, 'msg' => 'Bạn chưa đăng nhập']);
+            return response()->json(['success' => false]);
         }
         return $next($request);
     }
