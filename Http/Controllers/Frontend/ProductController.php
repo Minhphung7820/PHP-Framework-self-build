@@ -30,9 +30,14 @@ class ProductController extends BaseController
         echo $this->b . "<br>";
         echo "Cate là : " . $cate . "<br>";
         echo "Slug là : " . $slug . "<br>";
-        echo $prodModel->where('id', '=', 1)->first()->name . "<br>";
+        $data = $prodModel->where('id', '=', 1)->first();
         echo count($prodModel->all()) . "<br>";
+
         $this->repoProd->getAll();
+
+        return view('frontend.products.detail', [
+            'data' => $data
+        ]);
     }
     public function all(ProductsModel $prodModel)
     {

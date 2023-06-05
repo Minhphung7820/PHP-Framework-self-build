@@ -91,7 +91,7 @@ class Router extends BaseRouter
 
         foreach ($this->routes as $nameRouter => $router) {
             foreach ($router['routes'] as $route => $handler) {
-                $routeMapping = $route;
+                $routeMapping = rtrim($route, "/");
                 $patternParamMapping = '|\{([\w-]+)\}|';
                 $routeRegex = '|^' . preg_replace($patternParamMapping, '([\w-]+)', $routeMapping) . '$|';
 

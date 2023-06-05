@@ -2,8 +2,13 @@
 
 namespace Http\Controllers\Api;
 
-class UserController
+use Http\Controllers\BaseController;
+
+class UserController extends BaseController
 {
+    public function index()
+    {
+    }
     public function detail($id)
     {
         echo "Đây là trang api chi tuser với id là : " . $id;
