@@ -5,7 +5,7 @@ All mapping URLs in the Router/api directory must have the "/api" prefix before 
 */
 return [
     'name' => 'api.product',
-    'middlewares' => ['checkLogin:1:4'],
+    'middlewares' => ['checkLogin:1:1', 'checkRole:4'],
     'routes' => [
         '/api/san-pham/add' => [
             'handler' => [\Http\Controllers\Api\ProductController::class, 'add'],
