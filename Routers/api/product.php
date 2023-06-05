@@ -15,7 +15,7 @@ return [
         ],
         '/api/san-pham' => [
             'handler' => [\Http\Controllers\Api\ProductController::class, 'all'],
-            'middlewares' => ['checkLogin:1:1', 'checkRole:7'],
+            'middlewares' => ['checkLogin:1:1', 'checkRole:6'],
         ]
     ]
 ];

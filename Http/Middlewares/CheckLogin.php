@@ -7,10 +7,10 @@ use Supports\Http\Request;
 
 class CheckLogin
 {
-    public function handle(Closure $next, Request $request, int $a = null, int $b = null)
+    public function handle(Closure $next, Request $request, $a, $b)
     {
         if ($b + $a === 2) {
-            return response()->json($request->NEXT_REQUEST);
+            return response()->json("CC");
         }
         return $next($request);
     }

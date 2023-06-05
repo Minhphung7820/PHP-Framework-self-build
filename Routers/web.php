@@ -9,7 +9,7 @@ return [
         ],
         '/san-pham/{cate}/{slug}.html' => [
             'handler' => [\Http\Controllers\Frontend\ProductController::class, 'detail'],
-            'middlewares' => ['checkLogin', 'checkRole'],
+            'middlewares' => ['checkLogin:1:7', 'checkRole:78'],
         ],
         '/san-pham' => [
             'handler' => [\Http\Controllers\Frontend\ProductController::class, 'all'],

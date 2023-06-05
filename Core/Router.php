@@ -47,7 +47,36 @@ class Router extends BaseRouter
         };
         $paramsMain = [$next, $request];
         $params = array_merge($paramsMain, $arguments);
-        $result = $instanceMiddleware->handle(...$params);
+        $sortedParams = [];
+        $reflection = new ReflectionMethod($className, 'handle');
+        $parameters = $reflection->getParameters();
+        // Duyệt qua từng tham số trong hàm handle
+        foreach ($parameters as $parameter) {
+            $paramType = $parameter->getType();
+            // Kiểm tra xem tham số có kiểu đã được định nghĩa hay không
+            if ($paramType !== null) {
+                $paramType = $paramType->getName();
+
+                // Duyệt qua từng phần tử trong mảng $params
+                foreach ($params as $key => $param) {
+                    if ((is_object($param) && get_class($param) === $paramType) || gettype($param) === $paramType) {
+                        // Nếu kiểu của phần tử trùng khớp với loại tham số
+                        $sortedParams[$key] = $param;
+                        unset($params[$key]);
+                        break;
+                    }
+                }
+            }
+        }
+        // Nếu tham số ở dạng thường thì lấy param từ $arguments ví dụ name_middleware:param1:param2
+        foreach ($parameters as $index => $parameter) {
+            if (!isset($sortedParams[$index])) {
+                $sortedParams[$index] = array_shift($arguments);
+            }
+        }
+        // Ghép phần tử còn lại vào cuối mảng $sortedParams
+        $sortedParams = array_merge($sortedParams, $params);
+        $result = $instanceMiddleware->handle(...$sortedParams);
         return ($result === true) ? $result : false;
     }
 
