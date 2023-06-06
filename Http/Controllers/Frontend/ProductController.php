@@ -4,9 +4,11 @@ namespace Http\Controllers\Frontend;
 
 use Models\ProductsModel;
 use Http\Controllers\BaseController;
+use Models\User;
 use Predis\Client;
 use Repositories\Interfaces\InterfaceProductRepository;
 use stdClass;
+use Supports\Facades\Auth;
 
 class ProductController extends BaseController
 {
@@ -39,9 +41,15 @@ class ProductController extends BaseController
             'data' => $data
         ]);
     }
-    public function all(ProductsModel $prodModel)
+    public function all(ProductsModel $prodModel, User $userModel)
     {
-        $datas = $prodModel->all();
-        return view('frontend.products.index', ['datas' => $datas]);
+        // $datas = $prodModel->all();
+        // return view('frontend.products.index', ['datas' => $datas]);
+        Auth::guard('users')->attempt(['email' => 'tmpdz7820@gmail.com', 'password' => 123]);
+        if (Auth::guard('users')->check()) {
+            echo "Xin chào " . Auth::guard('users')->user()->fullname;
+        } else {
+            echo "Chưa đăng nhập !";
+        }
     }
 }

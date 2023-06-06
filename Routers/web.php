@@ -5,7 +5,7 @@ $this->group('san-pham', function () {
     $this->group(null, function () {
         $this->add('/{cate}/{slug}.html', [\Http\Controllers\Frontend\ProductController::class, 'detail']);
     });
-}, ["checkLogin:1:1", "checkRole:4"]);
+}, ["checkLogin:1:14", "checkRole:44"]);
 $this->add("/lien-he", function () {
     echo "Đây là view";
 });

@@ -26,6 +26,19 @@ class Eloquent extends ConnectDB
         return new $className(static::$table);
     }
 
+    public static function whereAttempLogin(array $conditions)
+    {
+        foreach ($conditions as $key => $value) {
+            static::$whereConditions[] = [
+                'column' =>  $key,
+                'operator' => "=",
+                'value' => $value
+            ];
+        }
+        $className = get_called_class();
+        return new $className(static::$table);
+    }
+
     public static function orWhere($column, $operator, $value)
     {
         static::$orWhereConditions[] = [
