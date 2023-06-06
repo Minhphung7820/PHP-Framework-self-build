@@ -1,24 +1,8 @@
 <?php
-return [
-    'middlewares' => [],
-    'name' => 'web',
-    'routes' => [
-        '/' => [
-            'handler' => [\Http\Controllers\Frontend\HomeController::class, 'index'],
 
-        ],
-        '/san-pham/{cate}/{slug}.html' => [
-            'handler' => [\Http\Controllers\Frontend\ProductController::class, 'detail'],
-            // 'middlewares' => ['checkLogin:1:1', 'checkRole:4'],
-        ],
-        '/san-pham' => [
-            'handler' => [\Http\Controllers\Frontend\ProductController::class, 'all'],
-            // 'middlewares' => ['checkLogin:1:123', 'checkRole:4'],
-        ],
-        '/lien-he' => [
-            'handler' => function () {
-                return view('frontend.contact.index');
-            },
-        ]
-    ]
-];
+$this->group(['checkLogin:1:7'], 'san-pham', function () {
+    $this->add('/', [\Http\Controllers\Frontend\ProductController::class, 'all']);
+    $this->group(['checkRole:7'], 'a', function () {
+        $this->add('/{cate}/{slug}.html', [\Http\Controllers\Frontend\ProductController::class, 'detail']);
+    });
+});

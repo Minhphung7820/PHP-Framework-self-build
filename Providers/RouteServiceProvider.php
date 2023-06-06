@@ -8,9 +8,9 @@ class RouteServiceProvider extends Router implements BaseServiceProvider
 {
     public function boot()
     {
-        $this->register(router('api.user'));
-        $this->register(router('api.product'));
-        $this->register(router('web'));
+        $this->register('/api/user.php');
+        $this->register('/api/product.php');
+        $this->register('/web.php');
         $this->runRoutes();
     }
 }

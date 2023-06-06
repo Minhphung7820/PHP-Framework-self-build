@@ -1,17 +1,10 @@
 <?php
-
-/*
-All mapping URLs in the Router/api directory must have the "/api" prefix before the URL.
-*/
-return [
-    'name' => 'api.user',
-    'middlewares' => ['checkLogin'],
-    'routes' => [
-        '/api/user/{id}' => [
-            'handler' => [\Http\Controllers\Api\UserController::class, 'detail']
-        ],
-        '/api/user' => [
-            'handler' => [\Http\Controllers\Api\UserController::class, 'all']
-        ]
-    ]
-];
+$this->group(['checkLogin'], 'api/pai', function () {
+    $this->add('/ssss', [\Http\Controllers\Api\ProductController::class, 'index'], ["cc", "LLL"]);
+    $this->group(['middlewa_2'], 'products', function () {
+        $this->group(['middlewa_3'], 'cca', function () {
+            $this->add('/ukm', [\Http\Controllers\Api\ProductController::class, 'index']);
+        });
+    });
+});
+$this->add('ukm', [\Http\Controllers\Api\ProductController::class, 'index']);
