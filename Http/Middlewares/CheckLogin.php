@@ -13,8 +13,8 @@ class CheckLogin
     public function handle(ProductsModel $productsModel, InterfaceProductRepository $repoProd, Closure $next, Request $request, $a, $b)
     {
         if ($b + $a === 2) {
-            Logger::info('Chưa đăng nhập mà đòi vô !');
-            return response()->json(['success' => false, "msg" => 'Chưa đăng nhập mà đòi vô !']);
+            // Logger::info('Chưa đăng nhập mà đòi vô !');
+            return response()->json(['success' => false, "msg" => 'Unauthenticated'], 401);
         }
         return $next($request);
     }
