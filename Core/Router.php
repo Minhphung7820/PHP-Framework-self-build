@@ -96,8 +96,9 @@ class Router extends BaseRouter
             foreach ($middlewares as  $middleware) {
                 if (!$this->handleMiddleware($middleware)) {
                     return false;
+                } else {
+                    $arrResults[] = true;
                 }
-                $arrResults[] = $this->handleMiddleware($middleware);
             }
             foreach ($arrResults as $result) {
                 if ($result) {
