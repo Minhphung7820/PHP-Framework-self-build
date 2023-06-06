@@ -11,9 +11,8 @@ class Router extends BaseRouter
     protected array $pathRoutes = [];
     protected array $middlewares = [];
     protected array $routesMapping = [];
-    protected array $prefix = [];
-
-
+    protected array $arrayPrefixs = [];
+    protected string $prefix;
 
     protected function getUrl(): string
     {
@@ -27,7 +26,7 @@ class Router extends BaseRouter
 
     public function add(string $url, $handler, array $middlewares = []): void
     {
-        $this->routesMapping[rtrim("/" . implode("/", $this->prefix), "/") . $url] = [
+        $this->routesMapping[rtrim("/" . implode("/", $this->arrayPrefixs), "/") . $url] = [
             'middlewares' => array_merge($this->middlewares, $middlewares),
             'handler' => $handler
         ];
@@ -35,14 +34,14 @@ class Router extends BaseRouter
 
     public function group(string $prefix = null, callable $callback, array $middlewares = []): void
     {
-        $previousPrefix = $this->prefix;
+        $previousPrefix = $this->arrayPrefixs;
         $previousMiddlwares = $this->middlewares;
-        $this->prefix[] = trim($prefix, "/");
+        $this->arrayPrefixs[] = trim($prefix, "/");
         foreach ($middlewares as $middleware) {
             $this->middlewares[] = $middleware;
         }
         $callback();
-        $this->prefix = $previousPrefix;
+        $this->arrayPrefixs = $previousPrefix;
         $this->middlewares = $previousMiddlwares;
     }
 
@@ -141,7 +140,7 @@ class Router extends BaseRouter
         // echo "</pre>";
         $paramsUrl = [];
         foreach ($this->routesMapping as $route => $handler) {
-            $routeMapping = rtrim($route, "/");
+            $routeMapping = strlen($route) > 1 ? rtrim($route, "/") : "/";
             $patternParamMapping = '|\{([\w-]+)\}|';
             $routeRegex = '|^' . preg_replace($patternParamMapping, '([\w-]+)', $routeMapping) . '$|';
             if (preg_match($routeRegex, $this->getUrl(), $matches)) {

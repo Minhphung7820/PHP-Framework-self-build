@@ -12,7 +12,7 @@ class CheckLogin
     public function handle(ProductsModel $productsModel, InterfaceProductRepository $repoProd, Closure $next, Request $request, $a, $b)
     {
         if ($b + $a === 2) {
-            return response()->json("CC");
+            return response()->json(['success' => false, "msg" => 'Chưa đăng nhập mà đòi vô']);
         }
         return $next($request);
     }
