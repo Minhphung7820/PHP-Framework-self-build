@@ -27,17 +27,17 @@ class Router extends BaseRouter
 
     public function add(string $url, $handler, array $middlewares = []): void
     {
-        $this->routesMapping["/" . rtrim(implode("/", $this->prefix), "/") . $url] = [
+        $this->routesMapping[rtrim("/" . implode("/", $this->prefix), "/") . $url] = [
             'middlewares' => array_merge($this->middlewares, $middlewares),
             'handler' => $handler
         ];
     }
 
-    public function group(array $middlewares = [], string $prefix, callable $callback): void
+    public function group(string $prefix = null, callable $callback, array $middlewares = []): void
     {
         $previousPrefix = $this->prefix;
         $previousMiddlwares = $this->middlewares;
-        $this->prefix[] = $prefix;
+        $this->prefix[] = trim($prefix, "/");
         foreach ($middlewares as $middleware) {
             $this->middlewares[] = $middleware;
         }
@@ -46,7 +46,7 @@ class Router extends BaseRouter
         $this->middlewares = $previousMiddlwares;
     }
 
-    protected function resolveParams($paramsHandle, array $continue)
+    protected function resolveParams($paramsHandle, array $continue): array
     {
         $paramsToRun = [];
         foreach ($paramsHandle as $param) {
@@ -134,7 +134,7 @@ class Router extends BaseRouter
     protected function runRoutes(): void
     {
         foreach ($this->pathRoutes as $path) {
-            include './Routers' .  $path;
+            include './Routers/' .  $path;
         }
         // echo "<pre>";
         // print_r($this->routesMapping);
@@ -152,15 +152,15 @@ class Router extends BaseRouter
                     }
                 }
 
-                $allMiddlewaresSingleRoutePassed = $this->shouldContinueRequest($handler['middlewares'] ?? []);
+                $allMiddlewaresRoutePassed = $this->shouldContinueRequest($handler['middlewares'] ?? []);
 
                 if (is_array($handler['handler'])) {
                     list($controller, $method) = $handler['handler'];
-                    if ($allMiddlewaresSingleRoutePassed) {
+                    if ($allMiddlewaresRoutePassed) {
                         $this->handleController($controller, $method, $paramsUrl);
                     }
                 } else {
-                    if ($allMiddlewaresSingleRoutePassed) {
+                    if ($allMiddlewaresRoutePassed) {
                         $this->handleAnonymousFunction($handler['handler'], $paramsUrl);
                     }
                 }
