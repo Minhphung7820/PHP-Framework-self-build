@@ -12,7 +12,6 @@ class Router extends BaseRouter
     protected array $middlewares = [];
     protected array $routesMapping = [];
     protected array $arrayPrefixs = [];
-    protected string $prefix;
 
     protected function getUrl(): string
     {
@@ -96,7 +95,7 @@ class Router extends BaseRouter
             $arrResults = [];
             foreach ($middlewares as  $middleware) {
                 if (!$this->handleMiddleware($middleware)) {
-                    exit;
+                    return false;
                 }
                 $arrResults[] = $this->handleMiddleware($middleware);
             }
