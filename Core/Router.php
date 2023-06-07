@@ -25,7 +25,11 @@ class Router extends BaseRouter
 
     public function add(string $url, $handler, array $middlewares = []): void
     {
-        $this->routesMapping[rtrim("/" . implode("/", $this->arrayPrefixs), "/") . $url] = [
+        $perfectUrl = rtrim(implode("/", $this->arrayPrefixs), "/") . $url;
+        if (substr($perfectUrl, 0, 1) !== "/") {
+            $perfectUrl = "/" . $perfectUrl;
+        }
+        $this->routesMapping[$perfectUrl] = [
             'middlewares' => array_merge($this->middlewares, $middlewares),
             'handler' => $handler
         ];
