@@ -1,7 +1,7 @@
 <?php
 return [
     'guards' => [
-        'users' => [
+        'user' => [
             'model' => \Models\User::class
         ],
     ]

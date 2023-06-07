@@ -4,7 +4,7 @@ namespace Supports\Facades;
 
 class Auth
 {
-    public static $guard = 'users';
+    public static $guard = 'user';
     public static function guard($guard)
     {
         self::$guard = $guard;
@@ -33,6 +33,17 @@ class Auth
 
     public static function logout()
     {
+        $cookieSessionIdArray = json_decode($_COOKIE['SESSION_ID_AUTH'], true);
+        foreach ($cookieSessionIdArray as $guard => $sessionId) {
+            if ($guard == self::$guard) {
+                unset($cookieSessionIdArray[$guard]);
+            }
+        }
+        if (count($cookieSessionIdArray) > 0) {
+            setcookie('SESSION_ID_AUTH', json_encode($cookieSessionIdArray, JSON_UNESCAPED_UNICODE), time() + (86400 * 30));
+        } else {
+            setcookie('SESSION_ID_AUTH', json_encode($cookieSessionIdArray, JSON_UNESCAPED_UNICODE), time() - 3600);
+        }
         unset($_SESSION['AUTH_LOGINED_GUARD_' . self::$guard]);
         return true;
     }
