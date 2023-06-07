@@ -29,6 +29,6 @@ class JWTvalid
         } else {
             $msg = 'Unauthenticated';
         }
-        return response()->json(['success' => false, "msg" =>  $msg], 401);
+        return response()->json(['success' => false, "message" =>  $msg], 401);
     }
 }
