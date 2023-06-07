@@ -11,8 +11,10 @@ class UserController extends BaseController
     }
     public function login()
     {
-        if (auth()->attempt(['email' => 'tmpdz7820@gmail.com', 'password' => 123])) {
-            echo "Login successful";
+        $login = auth()->attempt(['email' => 'tmpdz7820@gmail.com', 'password' => 123]);
+        if ($login) {
+            echo "Your Token Is : " . $login->createToken() . "<br>";
+            // echo "Login successful";
         } else {
             echo "email or password invalid";
         };

@@ -16,5 +16,5 @@ $this->add("/contact", function () {
 $this->group('user', function () {
     $this->add('/login', [\App\Http\Controllers\Frontend\UserController::class, 'login']);
     $this->add('/logout', [\App\Http\Controllers\Frontend\UserController::class, 'logout']);
-    $this->add('/dashboard', [\App\Http\Controllers\Backend\DashboardController::class, 'index'], ['checkLogin']);
+    $this->add('/dashboard', [\App\Http\Controllers\Backend\DashboardController::class, 'index'], ['checkJWT']);
 });

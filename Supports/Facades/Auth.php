@@ -2,9 +2,12 @@
 
 namespace Supports\Facades;
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 class Auth
 {
-    // guard default = user;
+    const JWT_SECRECT_KEY = 'fded5c1ce6529df01c52e330b8911263eaacfb24c9b940a113da6ce3e5302b15';
     public static $guard = 'user';
     public static function guard($guard)
     {
@@ -24,7 +27,7 @@ class Auth
             $cookieExpire = time() + (86400 * 30);
 
             if (version_compare(PHP_VERSION, '7.3.0', '>=')) {
-                setcookie('SESSION_ID_AUTH', $cookieValue, [
+                setcookie('__SESSION_AUTH', $cookieValue, [
                     'expires' => $cookieExpire,
                     'path' => '/',
                     'secure' => true,
@@ -32,14 +35,47 @@ class Auth
                     'samesite' => 'Strict',
                 ]);
             } else {
-                setcookie('SESSION_ID_AUTH', $cookieValue, $cookieExpire, '/', null, true, true);
+                setcookie('__SESSION_AUTH', $cookieValue, $cookieExpire, '/', null, true, true);
             }
 
             $_SESSION['AUTH_LOGINED_GUARD_' . static::$guard] = $query;
-            return true;
+            return new static;
         }
         return false;
     }
+
+    public static function createToken()
+    {
+        $key = self::JWT_SECRECT_KEY;
+        $expiration = time() + 3600;
+        $issuer = 'GalaxyFW-GFW';
+        $token = [
+            'iss' => $issuer,
+            'exp' => $expiration,
+            'isa' => time(),
+            'data' => (array) $_SESSION['AUTH_LOGINED_GUARD_' . static::$guard]
+        ];
+        return JWT::encode(
+            $token,
+            $key,
+            'HS256',
+        );
+    }
+
+    public static function validJWT($token)
+    {
+        try {
+            $decode =  JWT::decode(
+                $token,
+                new Key(self::JWT_SECRECT_KEY, 'HS256')
+            );
+            return $decode;
+        } catch (\Exception $e) {
+            Logger::error("JWT Invalid : " . $e->getMessage());
+            return false;
+        }
+    }
+
     public static function user()
     {
         return $_SESSION['AUTH_LOGINED_GUARD_' . static::$guard];
@@ -52,7 +88,7 @@ class Auth
 
     public static function logout()
     {
-        $cookieSessionIdArray = json_decode($_COOKIE['SESSION_ID_AUTH'], true);
+        $cookieSessionIdArray = json_decode($_COOKIE['__SESSION_AUTH'], true);
         foreach ($cookieSessionIdArray as $guard => $sessionId) {
             if ($guard == static::$guard) {
                 unset($cookieSessionIdArray[$guard]);
@@ -63,7 +99,7 @@ class Auth
             $cookieExpire = time() + (86400 * 30);
 
             if (version_compare(PHP_VERSION, '7.3.0', '>=')) {
-                setcookie('SESSION_ID_AUTH', $cookieValue, [
+                setcookie('__SESSION_AUTH', $cookieValue, [
                     'expires' => $cookieExpire,
                     'path' => '/',
                     'secure' => true,
@@ -71,11 +107,11 @@ class Auth
                     'samesite' => 'Strict',
                 ]);
             } else {
-                setcookie('SESSION_ID_AUTH', $cookieValue, $cookieExpire, '/', null, true, true);
+                setcookie('__SESSION_AUTH', $cookieValue, $cookieExpire, '/', null, true, true);
             }
         } else {
             if (version_compare(PHP_VERSION, '7.3.0', '>=')) {
-                setcookie('SESSION_ID_AUTH', '', [
+                setcookie('__SESSION_AUTH', '', [
                     'expires' => time() - 3600,
                     'path' => '/',
                     'secure' => true,
@@ -83,7 +119,7 @@ class Auth
                     'samesite' => 'Strict',
                 ]);
             } else {
-                setcookie('SESSION_ID_AUTH', '', time() - 3600, '/', null, true, true);
+                setcookie('__SESSION_AUTH', '', time() - 3600, '/', null, true, true);
             }
         }
 

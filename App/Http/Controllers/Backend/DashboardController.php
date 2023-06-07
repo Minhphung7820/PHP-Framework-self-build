@@ -8,6 +8,6 @@ class DashboardController extends BaseController
 {
     public function index()
     {
-        echo "This is dashboard page !";
+        echo "Đây là trang Dashboard";
     }
 }

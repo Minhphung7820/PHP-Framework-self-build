@@ -45,4 +45,11 @@ class Request
     {
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
     }
+
+    public function header($name)
+    {
+        $headers = getallheaders();
+        $authorizationHeader = isset($headers[$name]) ? $headers[$name] : '';
+        return $authorizationHeader;
+    }
 }
