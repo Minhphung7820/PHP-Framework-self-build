@@ -4,6 +4,7 @@ namespace Supports\Facades;
 
 class Auth
 {
+    // guard default = user;
     public static $guard = 'user';
     public static function guard($guard)
     {

@@ -3,7 +3,6 @@
 namespace Http\Controllers\Frontend;
 
 use Http\Controllers\BaseController;
-use Supports\Facades\Auth;
 
 class UserController extends BaseController
 {
@@ -12,8 +11,11 @@ class UserController extends BaseController
     }
     public function login()
     {
-        auth()->attempt(['email' => 'tmpdz7820@gmail.com', 'password' => 123]);
-        return redirect('/');
+        if (auth()->attempt(['email' => 'tmpdz7820@gmail.com', 'password' => 123])) {
+            echo "Login successful";
+        } else {
+            echo "email or password invalid";
+        };
     }
     public function logout()
     {
