@@ -115,3 +115,10 @@ if (!function_exists('classMiddleware')) {
         return config('kernel.middlewares')[explode(":", $name)[0]];
     }
 }
+
+if (!function_exists('auth')) {
+    function auth()
+    {
+        return new \Supports\Facades\Auth();
+    }
+}
