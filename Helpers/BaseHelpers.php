@@ -61,7 +61,7 @@ if (!function_exists('view')) {
 if (!function_exists('db')) {
     function db()
     {
-        return new Core\ConnectDB();
+        return new \Core\ConnectDB();
     }
 }
 
