@@ -25,6 +25,8 @@ class JWTvalid
                 } else {
                     $msg = 'Unauthorized';
                 }
+            } else {
+                $msg = 'Unauthorized';
             }
         } else {
             $msg = 'Unauthenticated';
