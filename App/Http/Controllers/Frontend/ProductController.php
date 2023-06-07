@@ -35,7 +35,7 @@ class ProductController extends BaseController
         $data = $prodModel->where('id', '=', 1)->first();
         echo count($prodModel->all()) . "<br>";
 
-        $this->repoProd->getAll();
+        echo count($this->repoProd->getAll());
 
         return view('frontend.products.detail', [
             'data' => $data

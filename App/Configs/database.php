@@ -1,7 +1,7 @@
 <?php
 return [
-    'db_host' => 'localhost',
-    'db_name' => 'tmp_fw',
-    'db_user' => 'root',
-    'db_password' => ''
+    'db_host' => env('DB_HOST'),
+    'db_name' => env('DB_DATABASE'),
+    'db_user' => env('DB_USERNAME'),
+    'db_password' => env('DB_PASSWORD')
 ];

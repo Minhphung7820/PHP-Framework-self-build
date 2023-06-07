@@ -122,3 +122,11 @@ if (!function_exists('auth')) {
         return new \Supports\Facades\Auth();
     }
 }
+
+if (!function_exists('env')) {
+    function env($key)
+    {
+        $env = parse_ini_file('.env');
+        return $env[$key];
+    }
+}
