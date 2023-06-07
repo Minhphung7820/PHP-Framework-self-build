@@ -9,3 +9,7 @@ $this->group('san-pham', function () {
 $this->add("/lien-he", function () {
     echo "Đây là view";
 });
+$this->group('user', function () {
+    $this->add('/login', [\Http\Controllers\Frontend\UserController::class, 'login']);
+    $this->add('/logout', [\Http\Controllers\Frontend\UserController::class, 'logout']);
+});

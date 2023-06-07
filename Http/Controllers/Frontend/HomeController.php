@@ -10,13 +10,9 @@ class HomeController extends BaseController
     public function index()
     {
         if (Auth::check()) {
-            echo "Xin chào " . Auth::user()->fullname;
+            echo "Hello " . Auth::user()->fullname;
         } else {
-            echo "Chưa đăng nhập";
+            echo "Not Logged In";
         }
-    }
-    public function test()
-    {
-        echo "Test";
     }
 }

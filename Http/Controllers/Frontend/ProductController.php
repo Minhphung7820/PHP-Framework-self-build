@@ -43,15 +43,12 @@ class ProductController extends BaseController
     }
     public function all(ProductsModel $prodModel, User $userModel)
     {
-        auth()->logout();
+        Auth::attempt(['email' => 'tmpdz7820@gmail.com', 'password' => 123]);
         return redirect('/');
-        // $datas = $prodModel->all();
-        // return view('frontend.products.index', ['datas' => $datas]);
-        // Auth::attempt(['email' => 'tmpdz7820@gmail.com', 'password' => 123]);
         // if (Auth::check()) {
-        //     echo "Xin chào " . Auth::user()->fullname;
+        //     echo "Hello " . Auth::user()->fullname;
         // } else {
-        //     echo "Chưa đăng nhập !";
+        //     echo "Not Logged In";
         // }
     }
 }

@@ -3,16 +3,21 @@
 namespace Http\Controllers\Frontend;
 
 use Http\Controllers\BaseController;
+use Supports\Facades\Auth;
 
 class UserController extends BaseController
 {
     public function index()
     {
-        echo "Đây là user index";
     }
-
-    public function test($id)
+    public function login()
     {
-        echo "Đây là user test có id là : " . $id;
+        auth()->attempt(['email' => 'tmpdz7820@gmail.com', 'password' => 123]);
+        return redirect('/');
+    }
+    public function logout()
+    {
+        auth()->logout();
+        return redirect('/');
     }
 }
