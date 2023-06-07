@@ -12,8 +12,12 @@ class Auth
     }
     public static function attempt($datas)
     {
+        $arraySessionAuth = [];
         $classModel = config('auth.guards.' . self::$guard . '.model');
         $query = app()->make($classModel)->whereAttempLogin($datas)->first();
+        session_regenerate_id();
+        $arraySessionAuth[self::$guard] = session_id();
+        setcookie('SESSION_ID_AUTH', json_encode($arraySessionAuth, JSON_UNESCAPED_UNICODE), time() + (86400 * 30));
         $_SESSION['AUTH_LOGINED_GUARD_' . self::$guard] = $query;
         return $query;
     }

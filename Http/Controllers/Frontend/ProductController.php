@@ -45,9 +45,9 @@ class ProductController extends BaseController
     {
         // $datas = $prodModel->all();
         // return view('frontend.products.index', ['datas' => $datas]);
-        Auth::guard('users')->attempt(['email' => 'tmpdz7820@gmail.com', 'password' => 123]);
-        if (Auth::guard('users')->check()) {
-            echo "Xin chào " . Auth::guard('users')->user()->fullname;
+        Auth::attempt(['email' => 'tmpdz7820@gmail.com', 'password' => 123]);
+        if (Auth::check()) {
+            echo "Xin chào " . Auth::user()->fullname;
         } else {
             echo "Chưa đăng nhập !";
         }
