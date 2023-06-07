@@ -3,7 +3,7 @@ if (!function_exists('config')) {
     function config($key)
     {
         $keys = explode('.', $key);
-        $configFile = './Configs/' . $keys[0] . '.php';
+        $configFile = './App/Configs/' . $keys[0] . '.php';
         unset($keys[0]);
         if (file_exists($configFile)) {
             $config = include $configFile;
@@ -27,7 +27,7 @@ if (!function_exists('config')) {
 if (!function_exists('router')) {
     function router($key)
     {
-        $routeFile = './Routers/' . str_replace('.', '/', $key) . '.php';
+        $routeFile = './App/Routers/' . str_replace('.', '/', $key) . '.php';
         if (file_exists($routeFile)) {
             $router = include $routeFile;
             $value = $router;
@@ -47,7 +47,7 @@ if (!function_exists('redirect')) {
 if (!function_exists('view')) {
     function view($viewPath, $data = [])
     {
-        $filePath = './Views/' . str_replace('.', '/', $viewPath) . '.php';
+        $filePath = './App/Views/' . str_replace('.', '/', $viewPath) . '.php';
         if (file_exists($filePath)) {
             ob_start();
             extract($data);
@@ -97,7 +97,7 @@ if (!function_exists('abort')) {
     function abort($code)
     {
         http_response_code($code);
-        include('./Views/errors/' . $code . '.html');
+        include('./App/Views/errors/' . $code . '.html');
         exit();
     }
 }

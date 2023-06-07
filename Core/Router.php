@@ -133,7 +133,7 @@ class Router extends BaseRouter
     protected function runRoutes(): void
     {
         foreach ($this->pathRoutes as $path) {
-            include './Routers/' .  $path;
+            include './App/Routers/' .  $path;
         }
         // echo "<pre>";
         // print_r($this->routesMapping);

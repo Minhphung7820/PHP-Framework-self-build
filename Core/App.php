@@ -3,7 +3,7 @@
 namespace Core;
 
 use DI\ContainerBuilder;
-use Models\ProductsModel;
+use App\Models\ProductsModel;
 
 class App
 {
@@ -18,8 +18,8 @@ class App
 
             /* Khai báo các Dependency injecttion tại đây  */
 
-            self::$container->set(\Repositories\Interfaces\InterfaceProductRepository::class, function () {
-                return new \Repositories\ProductRepository(new ProductsModel);
+            self::$container->set(\App\Repositories\Interfaces\InterfaceProductRepository::class, function () {
+                return new \App\Repositories\ProductRepository(new ProductsModel);
             });
 
             self::$container->set(\Closure::class, function () {
@@ -28,8 +28,8 @@ class App
                 };
             });
 
-            self::$container->set(\Http\Controllers\Frontend\ProductController::class, function () {
-                return new \Http\Controllers\Frontend\ProductController(new \Repositories\ProductRepository(new ProductsModel), "DORAEMON", "NOBITA");
+            self::$container->set(\App\Http\Controllers\Frontend\ProductController::class, function () {
+                return new \App\Http\Controllers\Frontend\ProductController(new \App\Repositories\ProductRepository(new ProductsModel), "DORAEMON", "NOBITA");
             });
 
             /*  ==================================================== */

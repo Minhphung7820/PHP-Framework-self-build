@@ -2,9 +2,9 @@
 
 namespace Bootstrap;
 
-use Providers\HelperServiceProvider;
-use Providers\RouteServiceProvider;
-use Providers\SessionHandlerServiceProvider;
+use App\Providers\HelperServiceProvider;
+use App\Providers\RouteServiceProvider;
+use App\Providers\SessionHandlerServiceProvider;
 
 class Bootstrap
 {
