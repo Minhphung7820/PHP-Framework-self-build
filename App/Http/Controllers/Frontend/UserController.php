@@ -22,6 +22,6 @@ class UserController extends BaseController
     public function logout()
     {
         auth()->logout();
-        return redirect('/');
+        return response()->json("Đã đăng xuất !");
     }
 }

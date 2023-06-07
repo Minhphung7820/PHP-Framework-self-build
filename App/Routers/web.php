@@ -18,7 +18,9 @@ $this->group(null, function () {
         $this->add('/dashboard', [\App\Http\Controllers\Backend\DashboardController::class, 'index']);
     });
 }, ['checkJWT']);
+
+
 $this->group('user', function () {
     $this->add('/login', [\App\Http\Controllers\Frontend\UserController::class, 'login']);
-    $this->add('/logout', [\App\Http\Controllers\Frontend\UserController::class, 'logout']);
+    $this->add('/logout', [\App\Http\Controllers\Frontend\UserController::class, 'logout'], ['checkLogin']);
 });

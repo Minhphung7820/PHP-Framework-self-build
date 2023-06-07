@@ -44,24 +44,6 @@ class Auth
         return false;
     }
 
-    public static function createToken()
-    {
-        $key = self::JWT_SECRECT_KEY;
-        $expiration = time() + 3600;
-        $issuer = 'GalaxyFW-GFW';
-        $token = [
-            'iss' => $issuer,
-            'exp' => $expiration,
-            'isa' => time(),
-            'data' => (array) $_SESSION['AUTH_LOGINED_GUARD_' . static::$guard]
-        ];
-        return JWT::encode(
-            $token,
-            $key,
-            'HS256',
-        );
-    }
-
     public static function validJWT($token)
     {
         try {
@@ -125,5 +107,26 @@ class Auth
 
         unset($_SESSION['AUTH_LOGINED_GUARD_' . static::$guard]);
         return true;
+    }
+
+    public static function createToken()
+    {
+        $key = self::JWT_SECRECT_KEY;
+        $expiration = time() + 120;
+        $issuer = 'GalaxyFW-GFW';
+        $token = [
+            'iss' => $issuer,
+            'exp' => $expiration,
+            'isa' => time(),
+            'data' => [
+                'guard' => static::$guard,
+                'authId' => static::user()->id
+            ]
+        ];
+        return JWT::encode(
+            $token,
+            $key,
+            'HS256',
+        );
     }
 }
