@@ -8,10 +8,10 @@ use Supports\Http\Request;
 
 class JWTvalid
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, $guard)
     {
         $msg = '';
-        if (auth()->check()) {
+        if (auth()->guard($guard)->check()) {
             $authorizationHeader = $request->header('Authorization');
             if (strpos($authorizationHeader, 'Bearer') === 0) {
                 $token = substr($authorizationHeader, 7);

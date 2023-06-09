@@ -142,7 +142,7 @@ class Router extends BaseRouter
         // echo "<pre>";
         // print_r($this->routesMapping);
         // echo "</pre>";
-        $flag404 = false;
+        $flag404 = true;
         $paramsUrl = [];
         foreach ($this->routesMapping as $route => $handler) {
             $routeMapping = strlen($route) > 1 ? rtrim($route, "/") : "/";
@@ -168,11 +168,11 @@ class Router extends BaseRouter
                         $this->handleAnonymousFunction($handler['handler'], $paramsUrl);
                     }
                 }
-                $flag404 = true;
+                $flag404 = false;
                 break;
             }
         }
-        if (!$flag404) {
+        if ($flag404) {
             abort(404);
         }
     }

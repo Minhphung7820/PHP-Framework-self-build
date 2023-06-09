@@ -112,7 +112,7 @@ class Auth
     public static function createToken()
     {
         $key = self::JWT_SECRECT_KEY;
-        $expiration = time() + 120;
+        $expiration = time() + 3600;
         $issuer = 'GalaxyFW-GFW';
         $token = [
             'iss' => $issuer,
