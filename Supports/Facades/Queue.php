@@ -55,6 +55,7 @@ class Queue
                                     echo $d, "\n";
                                     break;
                                 case 'fail':
+                                    $run = false;
                                     throw new \Exception($d->err);
                                     break;
                                 case 'quit':
