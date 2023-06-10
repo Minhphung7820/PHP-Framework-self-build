@@ -7,6 +7,6 @@ class JobDemo
 
     public function handle($a)
     {
-        echo "Đây là giúp demo với tham số là : " . $a;
+        echo "Đây là job demo với tham số là : " . $a;
     }
 }

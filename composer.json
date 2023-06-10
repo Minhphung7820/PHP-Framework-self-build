@@ -4,7 +4,8 @@
         "nesbot/carbon": "^2.53.1",
         "php-di/php-di": "^6.0",
         "firebase/php-jwt": "^6.5",
-        "symfony/process": "^5.0"
+        "symfony/process": "^5.0",
+        "phpmailer/phpmailer": "^6.8"
     },
     "autoload": {
         "psr-4": {

@@ -10,11 +10,11 @@ class Queue
     public function __construct()
     {
         $this->redis = new \Predis\Client([
-            'scheme' => 'tcp',
-            'host' => 'phpmvcoop.me',
-            'port' => 6379,
-            'database' => 0,
-            'read_write_timeout' => 0
+            'scheme' => config('app.redis.scheme'),
+            'host' => config('app.redis.host'),
+            'port' => config('app.redis.port'),
+            'database' => config('app.redis.database'),
+            'read_write_timeout' => config('app.redis.read_write_timeout')
         ]);
     }
 
