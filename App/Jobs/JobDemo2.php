@@ -2,11 +2,21 @@
 
 namespace App\Jobs;
 
+use App\Models\ProductsModel;
+use Supports\Facades\Mail;
+
 class JobDemo2
 {
 
-    public function handle($a)
+    public function handle(ProductsModel $productsModel, $a)
     {
-        echo "Đây là job demo 2 với tham số là : " . $a;
+        $data = [
+            'subject' => 'Mail DEMO',
+            'body' => 'Hello World',
+            'email' => 'phungtmps15106@fpt.edu.vn',
+            'name' => 'Trương Minh Phụng'
+        ];
+        $mail = new Mail($data);
+        $mail->send();
     }
 }

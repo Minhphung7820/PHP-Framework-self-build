@@ -2,6 +2,8 @@
 
 namespace Supports\Facades;
 
+use ReflectionMethod;
+
 class Queue
 {
     private static $instance;
@@ -32,7 +34,7 @@ class Queue
             $id = getmypid();
         }
         $workerID = $taskQ . ':worker:' . $id;
-        $this->redis->lpush($taskQ . ':workers', $workerID);
+        $this->redis->rpush($taskQ . ':workers', $workerID);
         $run = true;
         while ($run) {
             // Kiểm tra sự tồn tại của $taskQ trước khi thực hiện
@@ -45,10 +47,22 @@ class Queue
             if ($message) {
                 try {
                     $o = json_decode($message);
-                    $d = $o->d;
+                    $d = $o->d ?? null;
                     if ($o->e) {
-                        if (method_exists($di, $o->e)) {
-                            call_user_func([$di, $o->e], $d);
+                        $method = $o->e;
+                        if (method_exists($di, $method)) {
+                            $paramsToRun = [];
+                            $reflectionMethod = new ReflectionMethod($di, $method);
+                            $params = $reflectionMethod->getParameters();
+                            foreach ($params as $param) {
+                                if ($param->getType() !== null && !$param->getType()->isBuiltin()) {
+                                    $instance = $param->getType()->getName();
+                                    $paramsToRun[] = app()->make($instance);
+                                } else {
+                                    $paramsToRun[] = array_shift($d);
+                                }
+                            }
+                            app()->make($di)->$method(...$paramsToRun);
                         } else {
                             switch ($o->e) {
                                 case 'print':
