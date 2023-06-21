@@ -12,6 +12,10 @@ class Bootstrap
         SessionHandlerServiceProvider::class,
         HelperServiceProvider::class,
         RouteServiceProvider::class,
+
+
+        // Register providers here...
+
     ];
     public function run()
     {
