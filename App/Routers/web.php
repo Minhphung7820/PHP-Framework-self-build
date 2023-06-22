@@ -2,8 +2,8 @@
 // ========== Home
 $this->add('/', [\App\Http\Controllers\Frontend\HomeController::class, 'index']);
 // ===========Products
-$this->group('product', function () {
-    $this->add('/', [\App\Http\Controllers\Frontend\ProductController::class, 'all']);
+$this->group(null, function () {
+    $this->add('/san-pham', [\App\Http\Controllers\Frontend\ProductController::class, 'all']);
     $this->group(null, function () {
         $this->add('/{cate}/{slug}.html', [\App\Http\Controllers\Frontend\ProductController::class, 'detail']);
     });

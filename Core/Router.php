@@ -8,21 +8,63 @@ use ReflectionMethod;
 
 class Router extends BaseRouter
 {
+    /**
+     * Danh sách các đường dẫn đăng ký trong router.
+     *
+     * @var array
+     */
     protected array $pathRoutes = [];
+
+    /**
+     * Danh sách middleware được đăng ký trong router.
+     *
+     * @var array
+     */
     protected array $middlewares = [];
+
+    /**
+     * Bảng ánh xạ giữa URL và các xử lý tương ứng.
+     *
+     * @var array
+     */
     protected array $routesMapping = [];
+
+    /**
+     * Danh sách tiền tố URL được áp dụng trong router.
+     *
+     * @var array
+     */
     protected array $arrayPrefixs = [];
 
+    /**
+     * Trả về URL hiện tại.
+     *
+     * @return string
+     */
     protected function getUrl(): string
     {
         return rtrim($_SERVER['REQUEST_URI'], '/') ?: '/';
     }
 
+    /**
+     * Đăng ký một đường dẫn trong router.
+     *
+     * @param string $path
+     * @return void
+     */
     protected function register(string $path): void
     {
         $this->pathRoutes[$path] = $path;
     }
 
+    /**
+     * Thêm một route mới vào router.
+     *
+     * @param string $url
+     * @param mixed $handler
+     * @param array $middlewares
+     * @return void
+     */
     public function add(string $url, $handler, array $middlewares = []): void
     {
         $perfectUrl = rtrim(implode("/", $this->arrayPrefixs), "/") . $url;
@@ -35,6 +77,14 @@ class Router extends BaseRouter
         ];
     }
 
+    /**
+     * Tạo một nhóm route trong router.
+     *
+     * @param string|null $prefix
+     * @param callable $callback
+     * @param array $middlewares
+     * @return void
+     */
     public function group(string $prefix = null, callable $callback, array $middlewares = []): void
     {
         $previousPrefix = $this->arrayPrefixs;
@@ -48,6 +98,13 @@ class Router extends BaseRouter
         $this->middlewares = $previousMiddlwares;
     }
 
+    /**
+     * Giải quyết các tham số của phương thức hoặc hàm xử lý.
+     *
+     * @param array $paramsHandle
+     * @param array $continue
+     * @return array
+     */
     protected function resolveParams($paramsHandle, array $continue): array
     {
         $paramsToRun = [];
@@ -62,6 +119,12 @@ class Router extends BaseRouter
         return $paramsToRun;
     }
 
+    /**
+     * Xử lý middleware.
+     *
+     * @param string $middleware
+     * @return bool
+     */
     protected function handleMiddleware($middleware): bool
     {
         $arguments = explode(":", rtrim($middleware, ":"));
@@ -90,6 +153,13 @@ class Router extends BaseRouter
         return ($result === true) ? $result : false;
     }
 
+
+    /**
+     * Kiểm tra xem có tiếp tục xử lý request hay không dựa trên các middleware.
+     *
+     * @param array $middlewares
+     * @return bool
+     */
     protected function shouldContinueRequest(array $middlewares): bool
     {
         // Kiểm tra xem route có middleware không
@@ -117,6 +187,14 @@ class Router extends BaseRouter
         return $flag;
     }
 
+    /**
+     * Xử lý controller.
+     *
+     * @param mixed $controller
+     * @param string $method
+     * @param array $paramsMethod
+     * @return void
+     */
     protected function handleController($controller, $method, $paramsMethod): void
     {
         $instanceController = app()->make($controller);
@@ -126,6 +204,13 @@ class Router extends BaseRouter
         call_user_func_array([$instanceController, $method], $paramsMethod);
     }
 
+    /**
+     * Xử lý hàm vô danh.
+     *
+     * @param mixed $handler
+     * @param array $paramsFunction
+     * @return void
+     */
     protected function handleAnonymousFunction($handler, $paramsFunction): void
     {
         $reflectionFunction = new ReflectionFunction($handler);
@@ -134,6 +219,11 @@ class Router extends BaseRouter
         $handler(...$paramsFunction);
     }
 
+    /**
+     * Thực thi các route.
+     *
+     * @return void
+     */
     protected function runRoutes(): void
     {
         foreach ($this->pathRoutes as $path) {
