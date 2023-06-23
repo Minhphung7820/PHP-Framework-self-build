@@ -10,7 +10,7 @@ use Core\ConnectDB;
  * Lớp `Eloquent` đại diện cho một model trong kiểu framework.
  * Nó cung cấp các phương thức để xây dựng và thực thi các câu truy vấn SQL.
  * 
- * @author	Truong Minh Phung Back-End PHP Developer
+ * @author	Truong Minh Phung Back-End PHP Developer <minhphung485@gmail.com>
  * @package Core
  */
 class Eloquent extends ConnectDB

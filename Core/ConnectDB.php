@@ -12,7 +12,7 @@ use Supports\Facades\Logger;;
  * Lớp `ConnectDB` cung cấp các phương thức để quản lý kết nối và thực hiện các thao tác trên cơ sở dữ liệu.
  * Sử dụng đối tượng PDO để tạo kết nối và thực hiện truy vấn SQL.
  * 
- * @author	Truong Minh Phung Back-End PHP Developer
+ * @author	Truong Minh Phung Back-End PHP Developer <minhphung485@gmail.com>
  * @package Core
  */
 class ConnectDB

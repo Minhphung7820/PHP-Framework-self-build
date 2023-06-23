@@ -10,6 +10,7 @@
    7  Service Provider
    8  ORM Eloquent
    9  DI - Container (Dependency Injection Container)
-   10 Authentication
+   10 Authentication (JWT)
+   11 RESTful APIs
       ....
    Còn nhiều chức năng khác đang trong giai đoạn phát triển.

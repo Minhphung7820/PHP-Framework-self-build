@@ -1,5 +1,4 @@
 <?php
-
 return [
     'middlewares' => [
         'checkLogin' =>  \App\Http\Middlewares\CheckLogin::class,

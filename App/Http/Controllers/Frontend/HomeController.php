@@ -7,14 +7,12 @@ use App\Models\ProductsModel;
 use App\Models\User;
 use Supports\Facades\Auth;
 use Supports\Facades\Queue;
+use Supports\Facades\Mail;
 
 class HomeController extends BaseController
 {
     public function index()
     {
-        $data = ProductsModel::where('id', '=', 6)->get();
-        foreach ($data as $key => $value) {
-            echo $value->name . "<br>";
-        }
+        (new \App\Jobs\SendMailJob())->dispatchNow();
     }
 }

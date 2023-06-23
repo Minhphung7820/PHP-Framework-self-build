@@ -11,6 +11,7 @@ use App\Models\ProductsModel;
  * Lớp `App` đại diện cho ứng dụng chính của framework, có nhiệm vụ quản lý container và khai báo các Dependency Injection.
  * Cung cấp phương thức để truy cập vào container và lấy các đối tượng được khai báo.
  *
+ * @author	Truong Minh Phung Back-End PHP Developer <minhphung485@gmail.com>
  * @package Core
  */
 class App
@@ -21,7 +22,6 @@ class App
      * Đây là một thuộc tính tĩnh của lớp `App` dùng để lưu trữ đối tượng container của DI (Dependency Injection).
      * Container được sử dụng để quản lý và cung cấp các đối tượng trong ứng dụng.
      *
-     * @author	Truong Minh Phung Back-End PHP Developer
      * @var Container
      */
     private static $container;
