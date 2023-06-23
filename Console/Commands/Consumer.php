@@ -37,7 +37,7 @@ class Consumer
         $channel->basic_qos(null, 1, null);
         $channel->basic_consume('QUEUE_GFW', '', false, false, false, false, $callback);
 
-        while ($channel->is_open()) {
+        while ($channel->is_consuming()) {
             $channel->wait();
         }
 

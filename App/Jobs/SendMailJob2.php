@@ -16,7 +16,7 @@ class SendMailJob2 implements ShouldQueue
             'email' => 'minhphung485@gmail.com',
             'name' => 'Phụng Channel',
             'subject' => 'Test queue - GFW',
-            'body' => 'gggggggggggggggggg'
+            'body' => 'mmmmmmmmmmmmmmmmmmmmm'
         ];
         (new Mail($data))->send();
     }
