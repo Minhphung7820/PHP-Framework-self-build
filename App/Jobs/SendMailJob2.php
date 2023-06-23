@@ -7,16 +7,16 @@ use Supports\Facades\Traits\Dispatchable;
 use Supports\Facades\Interfaces\ShouldQueue;
 use Supports\Facades\Mail;
 
-class SendMailJob implements ShouldQueue
+class SendMailJob2 implements ShouldQueue
 {
     use Dispatchable;
     public function handle(ProductsModel $prod)
     {
         $data = [
-            'email' => 'phungtmps15106@fpt.edu.vn',
-            'name' => 'Phụng',
+            'email' => 'minhphung485@gmail.com',
+            'name' => 'Phụng Channel',
             'subject' => 'Test queue - GFW',
-            'body' => 'cc'
+            'body' => 'gggggggggggggggggg'
         ];
         (new Mail($data))->send();
     }

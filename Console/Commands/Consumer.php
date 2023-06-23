@@ -17,7 +17,7 @@ class Consumer
         echo " [*] Waiting for queue job. To exit press CTRL+C\n";
 
         $callback = function ($msg) {
-            $classJob = $msg->body;
+            $classJob = explode(":", $msg->body)[0];
             $instanceJob = new $classJob();
             $reflectionMethod = new ReflectionMethod($classJob, 'handle');
             $paramsToRun = [];
@@ -29,13 +29,19 @@ class Consumer
                 }
             }
             $instanceJob->handle(...$paramsToRun);
-            echo ' [OK] Processed Job ', $classJob, "\n";
+            echo ' [OK] Processed Job ', $msg->body, "\n";
+
+            $msg->ack();
         };
 
-        $channel->basic_consume('QUEUE_GFW', '', false, true, false, false, $callback);
+        $channel->basic_qos(null, 1, null);
+        $channel->basic_consume('QUEUE_GFW', '', false, false, false, false, $callback);
 
-        while (count($channel->callbacks)) {
+        while ($channel->is_open()) {
             $channel->wait();
         }
+
+        $channel->close();
+        $connection->close();
     }
 }

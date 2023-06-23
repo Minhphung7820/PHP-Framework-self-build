@@ -9,7 +9,7 @@ trait Dispatchable
 {
     public static function dispatchNow()
     {
-        $nameJob = get_called_class();
+        $nameJob = get_called_class() . ":" . bin2hex(random_bytes(32));
         // Kết nối tới RabbitMQ
         $connection = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
         $channel = $connection->channel();

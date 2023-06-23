@@ -14,5 +14,6 @@ class HomeController extends BaseController
     public function index()
     {
         \App\Jobs\SendMailJob::dispatchNow();
+        \App\Jobs\SendMailJob2::dispatchNow();
     }
 }
