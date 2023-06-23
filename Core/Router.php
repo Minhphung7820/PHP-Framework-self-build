@@ -12,6 +12,7 @@ use ReflectionMethod;
  * Lớp `Router` đại diện cho một bộ định tuyến trong framework.
  * Đây là một lớp con của lớp cơ sở BaseRouter.
  * 
+ * @author	Truong Minh Phung Back-End PHP Developer
  * @package Core
  */
 class Router extends BaseRouter

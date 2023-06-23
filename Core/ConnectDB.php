@@ -11,7 +11,8 @@ use Supports\Facades\Logger;;
  *
  * Lớp `ConnectDB` cung cấp các phương thức để quản lý kết nối và thực hiện các thao tác trên cơ sở dữ liệu.
  * Sử dụng đối tượng PDO để tạo kết nối và thực hiện truy vấn SQL.
- *
+ * 
+ * @author	Truong Minh Phung Back-End PHP Developer
  * @package Core
  */
 class ConnectDB
@@ -57,6 +58,7 @@ class ConnectDB
             static::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             Logger::error($e->getMessage());
+            throw new \Exception("Failed to connect to the database.", 500);
         }
     }
 

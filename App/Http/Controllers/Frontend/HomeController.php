@@ -12,7 +12,9 @@ class HomeController extends BaseController
 {
     public function index()
     {
-        $data = ProductsModel::where('id', '=', 1)->orWhere('id', '=', 2)->orWhere('id', '=', 6)->get();
-        echo count($data);
+        $data = ProductsModel::where('id', '=', 6)->get();
+        foreach ($data as $key => $value) {
+            echo $value->name . "<br>";
+        }
     }
 }
