@@ -4,5 +4,5 @@ namespace Supports\Facades\Interfaces;
 
 interface ShouldQueue
 {
-    public function dispatchNow();
+    public static function dispatchNow();
 }

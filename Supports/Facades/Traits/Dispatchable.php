@@ -7,10 +7,9 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 trait Dispatchable
 {
-    public function dispatchNow()
+    public static function dispatchNow()
     {
-
-        $nameJob = get_class($this);
+        $nameJob = get_called_class();
         // Kết nối tới RabbitMQ
         $connection = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
         $channel = $connection->channel();

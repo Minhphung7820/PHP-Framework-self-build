@@ -2,15 +2,15 @@
 
 namespace App\Jobs;
 
-use App\Jobs\Interfaces\BaseQueue;
+use App\Models\ProductsModel;
 use Supports\Facades\Traits\Dispatchable;
 use Supports\Facades\Interfaces\ShouldQueue;
 use Supports\Facades\Mail;
 
-class SendMailJob implements BaseQueue, ShouldQueue
+class SendMailJob implements ShouldQueue
 {
     use Dispatchable;
-    public function handle()
+    public function handle(ProductsModel $prod)
     {
         $data = [
             'email' => 'phungtmps15106@fpt.edu.vn',

@@ -13,6 +13,7 @@
             "App\\": "App/",
             "Bootstrap\\": "Bootstrap/",
             "Core\\": "Core/",
+            "Console\\": "Console/",
             "Exceptions\\": "Exceptions/",
             "Helpers\\": "Helpers/",
             "Public\\": "Public/",

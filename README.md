@@ -12,5 +12,6 @@
    9  DI - Container (Dependency Injection Container)
    10 Authentication (JWT)
    11 RESTful APIs
+   12 Queue Worker with RabbitMQ
       ....
    Còn nhiều chức năng khác đang trong giai đoạn phát triển.

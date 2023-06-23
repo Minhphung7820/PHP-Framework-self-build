@@ -13,6 +13,6 @@ class HomeController extends BaseController
 {
     public function index()
     {
-        (new \App\Jobs\SendMailJob())->dispatchNow();
+        \App\Jobs\SendMailJob::dispatchNow();
     }
 }
