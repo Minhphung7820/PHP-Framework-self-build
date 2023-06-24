@@ -10,14 +10,13 @@ use Supports\Facades\Mail;
 class SendMailJob implements ShouldQueue
 {
     use Dispatchable;
+    public $data;
+    public function __construct($data)
+    {
+        $this->data = $data;
+    }
     public function handle(ProductsModel $prod)
     {
-        $data = [
-            'email' => 'phungtmps15106@fpt.edu.vn',
-            'name' => 'Phụng',
-            'subject' => 'Test queue - GFW',
-            'body' => 'cc'
-        ];
-        (new Mail($data))->send();
+        (new Mail($this->data))->send();
     }
 }

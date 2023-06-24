@@ -14,11 +14,12 @@ class Consumer
 
         $channel->queue_declare('QUEUE_GFW', false, false, false, false);
 
-        echo " [*] Waiting for queue job. To exit press CTRL+C\n";
+        echo "\e[1;33m [*] Waiting for queue job. To exit press CTRL+C\e[0m\n";
 
         $callback = function ($msg) {
-            $classJob = explode(":", $msg->body)[0];
-            $instanceJob = new $classJob();
+            $data = json_decode($msg->body, true);
+            $classJob = explode(":",  $data[0])[0];
+            $instanceJob = new $classJob(...$data[1]);
             $reflectionMethod = new ReflectionMethod($classJob, 'handle');
             $paramsToRun = [];
             $paramsHandle = $reflectionMethod->getParameters();
@@ -29,7 +30,7 @@ class Consumer
                 }
             }
             $instanceJob->handle(...$paramsToRun);
-            echo ' [OK] Processed Job ', $msg->body, "\n";
+            echo "\e[1;32m" . ' [OK] Processed Job ' . $data[0] . "\e[0m\n";
 
             $msg->ack();
         };

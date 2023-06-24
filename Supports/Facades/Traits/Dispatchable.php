@@ -7,7 +7,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 trait Dispatchable
 {
-    public static function dispatchNow()
+    public static function dispatchNow(...$args)
     {
         $nameJob = get_called_class() . ":" . bin2hex(random_bytes(32));
         // Kết nối tới RabbitMQ
@@ -18,7 +18,8 @@ trait Dispatchable
         $channel->queue_declare("QUEUE_GFW", false, false, false, false);
 
         // Gửi một tác vụ vào hàng đợi
-        $message = new AMQPMessage($nameJob);
+        $data = array($nameJob, $args);
+        $message = new AMQPMessage(json_encode($data, true));
         $channel->basic_publish($message, '',  "QUEUE_GFW");
 
         // echo "Sent `$nameJob` to the task_queue.\n";

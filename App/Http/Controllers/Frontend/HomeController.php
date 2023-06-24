@@ -8,12 +8,18 @@ use App\Models\User;
 use Supports\Facades\Auth;
 use Supports\Facades\Queue;
 use Supports\Facades\Mail;
+use Supports\Http\Request;
 
 class HomeController extends BaseController
 {
-    public function index()
+    public function index(Request $request)
     {
-        \App\Jobs\SendMailJob::dispatchNow();
-        \App\Jobs\SendMailJob2::dispatchNow();
+        $data = [
+            'email' => 'phungtmps15106@fpt.edu.vn',
+            'name' => 'Phụng',
+            'subject' => 'Test queue - GFW',
+            'body' => $request->body
+        ];
+        \App\Jobs\SendMailJob::dispatchNow($data);
     }
 }
