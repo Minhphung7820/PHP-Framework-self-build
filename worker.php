@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
-use Console\Commands\Consumer;
+use Console\Commands\QueueConsumer;
 
-(new Consumer())->run();
+(new QueueConsumer())->run();

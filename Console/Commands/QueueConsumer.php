@@ -5,7 +5,7 @@ namespace Console\Commands;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use ReflectionMethod;
 
-class Consumer
+class QueueConsumer
 {
     public function run()
     {
