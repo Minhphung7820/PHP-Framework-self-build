@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-abstract class BaseController
+class BaseController
 {
-    // abstract public function index();
 }

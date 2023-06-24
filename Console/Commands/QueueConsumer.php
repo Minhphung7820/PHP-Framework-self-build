@@ -18,6 +18,8 @@ class QueueConsumer
 
         $callback = function ($msg) {
             $data = json_decode($msg->body, true);
+            echo "\e[1;33m" . ' [..] Processing Job ' . $data[0] . "\e[0m\n";
+
             $classJob = explode(":",  $data[0])[0];
             $instanceJob = new $classJob(...$data[1]);
             $reflectionMethod = new ReflectionMethod($classJob, 'handle');
