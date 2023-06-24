@@ -6,12 +6,15 @@ use Core\Router;
 
 class RouteServiceProvider extends Router implements BaseServiceProvider
 {
+    public function register()
+    {
+    }
     public function boot()
     {
-        $this->register('api/user.php');
-        $this->register('api/product.php');
-        $this->register('web.php');
-        $this->register('auth/auth.php');
+        $this->loadRouteFrom('api/user.php');
+        $this->loadRouteFrom('api/product.php');
+        $this->loadRouteFrom('web.php');
+        $this->loadRouteFrom('auth/auth.php');
         $this->runRoutes();
     }
 }

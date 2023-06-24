@@ -4,6 +4,9 @@ namespace App\Providers;
 
 class SessionHandlerServiceProvider implements BaseServiceProvider
 {
+    public function register()
+    {
+    }
     public function boot()
     {
         // Check if have $cookie sesssion id _auth , restore session by id

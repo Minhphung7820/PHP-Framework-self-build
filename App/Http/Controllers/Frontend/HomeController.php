@@ -15,7 +15,7 @@ class HomeController extends BaseController
     public function index(Request $request)
     {
         $data = [
-            'email' => 'phungtmps15106@fpt.edu.vn',
+            'email' => 'minhphung485@gmail.com',
             'name' => 'Phụng',
             'subject' => 'Test queue - GFW',
             'body' => $request->body

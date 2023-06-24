@@ -56,12 +56,12 @@ class Router extends BaseRouter
     }
 
     /**
-     * Đăng ký một đường dẫn trong router.
+     * Lấy các đường dẫn từ file khai báo route.
      *
      * @param string $path
      * @return void
      */
-    protected function register(string $path): void
+    protected function loadRouteFrom(string $path): void
     {
         $this->pathRoutes[$path] = $path;
     }

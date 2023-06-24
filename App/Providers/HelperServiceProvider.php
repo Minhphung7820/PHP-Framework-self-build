@@ -7,6 +7,9 @@ use DirectoryIterator;
 
 class HelperServiceProvider implements BaseServiceProvider
 {
+    public function register()
+    {
+    }
     public function boot()
     {
         $folderPath = './Helpers';
