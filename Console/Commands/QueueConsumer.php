@@ -7,6 +7,13 @@ use ReflectionMethod;
 
 class QueueConsumer
 {
+    public function timeQueue()
+    {
+        $timezone = 'Asia/Ho_Chi_Minh';
+        \Carbon\Carbon::setLocale('vi');
+        return new \Carbon\Carbon(null, $timezone);
+    }
+
     public function run()
     {
         $connection = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
@@ -14,11 +21,11 @@ class QueueConsumer
 
         $channel->queue_declare('QUEUE_GFW', false, false, false, false);
 
-        echo "\e[1;33m [*] Waiting for queue job. To exit press CTRL+C\e[0m\n";
+        echo "\e[33m [*] Waiting for queue job. To exit press CTRL+C\e[0m\n";
 
         $callback = function ($msg) {
             $data = json_decode($msg->body, true);
-            echo "\e[1;33m" . ' [..] Processing Job ' . $data[0] . "\e[0m\n";
+            echo "\e[33m" . ' [..] [' . $this->timeQueue() . '][' . explode(":",  $data[0])[1] . '] ' . explode(":",  $data[0])[0] . ' Processing' . "\e[0m\n";
 
             $classJob = explode(":",  $data[0])[0];
             $instanceJob = new $classJob(...$data[1]);
@@ -32,7 +39,7 @@ class QueueConsumer
                 }
             }
             $instanceJob->handle(...$paramsToRun);
-            echo "\e[1;32m" . ' [OK] Processed Job ' . $data[0] . "\e[0m\n";
+            echo "\e[32m" . ' [OK] [' . $this->timeQueue() . '][' . explode(":",  $data[0])[1] . '] ' . explode(":",  $data[0])[0] . ' Processed' . "\e[0m\n";
 
             $msg->ack();
         };

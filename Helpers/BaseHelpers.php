@@ -68,7 +68,9 @@ if (!function_exists('db')) {
 if (!function_exists('now')) {
     function now()
     {
-        return new \Carbon\Carbon();
+        $timezone = 'Asia/Ho_Chi_Minh';
+        \Carbon\Carbon::setLocale('vi');
+        return new \Carbon\Carbon(null, $timezone);
     }
 }
 
