@@ -12,14 +12,8 @@ use Supports\Http\Request;
 
 class HomeController extends BaseController
 {
-    public function index(Request $request)
+    public function index()
     {
-        $data = [
-            'email' => 'minhphung485@gmail.com',
-            'name' => 'Phụng',
-            'subject' => 'Test queue - GFW',
-            'body' => $request->body
-        ];
-        \App\Jobs\SendMailJob::dispatchNow($data);
+        echo "This Is A Home Page";
     }
 }

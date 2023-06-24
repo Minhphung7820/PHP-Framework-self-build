@@ -15,7 +15,7 @@ class SendMailJob implements ShouldQueue
     {
         $this->data = $data;
     }
-    public function handle(ProductsModel $prod)
+    public function handle()
     {
         (new Mail($this->data))->send();
     }
