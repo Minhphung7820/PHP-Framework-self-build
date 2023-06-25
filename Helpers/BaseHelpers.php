@@ -136,6 +136,6 @@ if (!function_exists('env')) {
 if (!function_exists('event')) {
     function event($object)
     {
-        return \Supports\Facades\Event::dispatch($object);
+        \Supports\Facades\Event::dispatch($object);
     }
 }

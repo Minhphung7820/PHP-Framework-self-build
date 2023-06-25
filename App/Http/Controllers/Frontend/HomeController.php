@@ -22,6 +22,13 @@ class HomeController extends BaseController
             'subject' => 'Demo Queue',
             'body' => "qưerrr",
         ];
+        $data1 = [
+            'email' => 'phungtmps15106@fpt.edu.vn',
+            'name' => 'tmp',
+            'subject' => 'Demo Queue',
+            'body' => "qưerrr",
+        ];
+        \App\Jobs\SendMailJob::dispatchNow($data1);
         Event::dispatch(new AfterRegisted($data));
         echo "This Is A Home Page";
         // $arr = array(new AfterRegisted($data), "Fdf", 123, "KJ");
