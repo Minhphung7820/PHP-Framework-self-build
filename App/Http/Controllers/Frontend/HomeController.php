@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Events\AfterRegisted;
+use App\Events\DemoEvent;
 use App\Http\Controllers\BaseController;
 use App\Models\ProductsModel;
 use App\Models\User;
@@ -17,26 +18,12 @@ class HomeController extends BaseController
     public function index()
     {
         $data = [
-            'email' => 'minhphung485@gmail.com',
-            'name' => 'tmp',
-            'subject' => 'Demo Queue',
-            'body' => "qưerrr",
-        ];
-        $data1 = [
             'email' => 'phungtmps15106@fpt.edu.vn',
-            'name' => 'tmp',
-            'subject' => 'Demo Queue',
-            'body' => "qưerrr",
+            'name' => 'GalaxyFW',
+            'subject' => 'Demo Event',
+            'body' => 'This is Event Demo',
         ];
-        \App\Jobs\SendMailJob::dispatchNow($data1);
-        Event::dispatch(new AfterRegisted($data));
-        echo "This Is A Home Page";
-        // $arr = array(new AfterRegisted($data), "Fdf", 123, "KJ");
-
-        // $js = serialize($arr);
-        // $rs = unserialize($js);
-        // echo "<pre>";
-        // print_r($rs);
-        // echo "</pre>";
+        Event::dispatch(new DemoEvent($data));
+        // echo "This is Home page";
     }
 }

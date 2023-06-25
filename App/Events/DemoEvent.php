@@ -2,7 +2,8 @@
 
 namespace App\Events;
 
-class AfterRegisted
+
+class DemoEvent
 {
     public $data;
 

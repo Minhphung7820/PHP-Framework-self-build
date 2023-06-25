@@ -2,15 +2,16 @@
 
 namespace App\Providers;
 
-use App\Events\AfterRegisted;
-use App\Listeners\SendNotify;
+use App\Events\DemoEvent;
+use App\Listeners\Demo1;
+use App\Listeners\Demo2;
 
 class EventServiceProvider implements BaseServiceProvider
 {
     const LISTENER_MAPPING = [
-        \App\Events\AfterRegisted::class => [
-            \App\Listeners\SendNotify::class,
-            \App\Listeners\SendMail::class
+        DemoEvent::class => [
+            Demo1::class,
+            Demo2::class
         ]
     ];
     public function register()

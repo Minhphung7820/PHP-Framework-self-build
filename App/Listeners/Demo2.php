@@ -2,15 +2,16 @@
 
 namespace App\Listeners;
 
-use App\Events\AfterRegisted;
+use App\Events\DemoEvent;
 use Supports\Facades\Interfaces\ShouldQueue;
-use Supports\Facades\Traits\Dispatchable;
 use Supports\Facades\Mail;
+use Supports\Facades\Traits\Dispatchable;
 
-class SendNotify implements ShouldQueue
+class Demo2 implements ShouldQueue
 {
     use Dispatchable;
-    public function handle(AfterRegisted $event)
+
+    public function handle(DemoEvent $event)
     {
         (new Mail($event->data))->send();
     }
