@@ -16,6 +16,7 @@ class QueueConsumer
 
     public function run()
     {
+        ini_set('display_errors', 0);
         $connection = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
         $channel = $connection->channel();
 
@@ -42,9 +43,20 @@ class QueueConsumer
                 }
                 $instanceJob->handle(...$paramsToRun);
 
-                echo "\e[32m" . ' [OK] [' . $this->timeQueue() . '][' . explode(":",  $data[0])[1] . '] ' . explode(":",  $data[0])[0] . ' Processed' . "\e[0m\n";
 
-                $msg->ack();
+                if (!error_get_last()) {
+                    echo "\e[32m" . ' [OK] [' . $this->timeQueue() . '][' . explode(":",  $data[0])[1] . '] ' . explode(":",  $data[0])[0] . ' Processed' . "\e[0m\n";
+
+                    $msg->ack();
+                } else {
+                    echo "\e[31m" . ' [NO] [' . $this->timeQueue() . '][' . explode(":",  $data[0])[1] . '] ' . explode(":",  $data[0])[0] . ' Failed' . "\e[0m\n";
+
+                    $msg->ack();
+
+                    \Supports\Facades\Logger::error('Failed Job : ' . error_get_last()['message'] . ' in ' . error_get_last()['file'] . ' at ' . error_get_last()['line']);
+
+                    error_clear_last();
+                }
             } elseif (strpos($classJob, 'App\Listeners\\') === 0) {
                 list($instanceEvent) = $data[1];
                 $instanceJob = new $classJob();
@@ -63,9 +75,19 @@ class QueueConsumer
                 }
                 $instanceJob->handle(...$paramsToRun);
 
-                echo "\e[32m" . ' [OK] [' . $this->timeQueue() . '][' . explode(":",  $data[0])[1] . '] ' . explode(":",  $data[0])[0] . ' Processed' . "\e[0m\n";
+                if (!error_get_last()) {
+                    echo "\e[32m" . ' [OK] [' . $this->timeQueue() . '][' . explode(":",  $data[0])[1] . '] ' . explode(":",  $data[0])[0] . ' Processed' . "\e[0m\n";
 
-                $msg->ack();
+                    $msg->ack();
+                } else {
+                    echo "\e[31m" . ' [NO] [' . $this->timeQueue() . '][' . explode(":",  $data[0])[1] . '] ' . explode(":",  $data[0])[0] . ' Failed' . "\e[0m\n";
+
+                    $msg->ack();
+
+                    \Supports\Facades\Logger::error('Failed Job : ' . error_get_last()['message'] . ' in ' . error_get_last()['file'] . ' at ' . error_get_last()['line']);
+
+                    error_clear_last();
+                }
             }
         };
 
