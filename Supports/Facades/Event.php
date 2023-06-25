@@ -17,7 +17,7 @@ class Event extends EventServiceProvider
             foreach ($listeners as $listener) {
                 $objectListener = new $listener();
                 if ($objectListener instanceof ShouldQueue) {
-                    $listener::dispatchNow();
+                    $listener::dispatchNow($instanceEvent);
                 } else {
                     $paramsToRun = [];
                     $reflectionMethod = new ReflectionMethod($listener, 'handle');

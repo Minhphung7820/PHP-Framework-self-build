@@ -24,24 +24,49 @@ class QueueConsumer
         echo "\e[33m [*] Waiting for queue job. To exit press CTRL+C\e[0m\n";
 
         $callback = function ($msg) {
-            $data = json_decode($msg->body, true);
+            $data = unserialize($msg->body);
             echo "\e[33m" . ' [..] [' . $this->timeQueue() . '][' . explode(":",  $data[0])[1] . '] ' . explode(":",  $data[0])[0] . ' Processing' . "\e[0m\n";
 
             $classJob = explode(":",  $data[0])[0];
-            $instanceJob = new $classJob(...$data[1]);
-            $reflectionMethod = new ReflectionMethod($classJob, 'handle');
-            $paramsToRun = [];
-            $paramsHandle = $reflectionMethod->getParameters();
-            foreach ($paramsHandle as $param) {
-                if ($param->getType() !== null && !$param->getType()->isBuiltin()) {
-                    $instance = $param->getType()->getName();
-                    $paramsToRun[] = (\Core\App::getContainer())->make($instance);
-                }
-            }
-            $instanceJob->handle(...$paramsToRun);
-            echo "\e[32m" . ' [OK] [' . $this->timeQueue() . '][' . explode(":",  $data[0])[1] . '] ' . explode(":",  $data[0])[0] . ' Processed' . "\e[0m\n";
 
-            $msg->ack();
+            if (strpos($classJob, 'App\Jobs\\') === 0) {
+                $instanceJob = new $classJob(...$data[1]);
+                $reflectionMethod = new ReflectionMethod($classJob, 'handle');
+                $paramsToRun = [];
+                $paramsHandle = $reflectionMethod->getParameters();
+                foreach ($paramsHandle as $key => $param) {
+                    if ($param->getType() !== null && !$param->getType()->isBuiltin()) {
+                        $className = $param->getType()->getName();
+                        $paramsToRun[] = (\Core\App::getContainer())->make($className);
+                    }
+                }
+                $instanceJob->handle(...$paramsToRun);
+
+                echo "\e[32m" . ' [OK] [' . $this->timeQueue() . '][' . explode(":",  $data[0])[1] . '] ' . explode(":",  $data[0])[0] . ' Processed' . "\e[0m\n";
+
+                $msg->ack();
+            } elseif (strpos($classJob, 'App\Listeners\\') === 0) {
+                list($instanceEvent) = $data[1];
+                $instanceJob = new $classJob();
+                $reflectionMethod = new ReflectionMethod($classJob, 'handle');
+                $paramsToRun = [];
+                $paramsHandle = $reflectionMethod->getParameters();
+                foreach ($paramsHandle as $key => $param) {
+                    if ($param->getType() !== null && !$param->getType()->isBuiltin()) {
+                        $className = $param->getType()->getName();
+                        if ($className === get_class($instanceEvent)) {
+                            $paramsToRun[$key] = $instanceEvent;
+                        } else {
+                            $paramsToRun[$key] = (\Core\App::getContainer())->make($className);
+                        }
+                    }
+                }
+                $instanceJob->handle(...$paramsToRun);
+
+                echo "\e[32m" . ' [OK] [' . $this->timeQueue() . '][' . explode(":",  $data[0])[1] . '] ' . explode(":",  $data[0])[0] . ' Processed' . "\e[0m\n";
+
+                $msg->ack();
+            }
         };
 
         $channel->basic_qos(null, 1, null);

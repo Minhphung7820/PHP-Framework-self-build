@@ -19,7 +19,7 @@ trait Dispatchable
 
         // Gửi một tác vụ vào hàng đợi
         $data = array($nameJob, $args);
-        $message = new AMQPMessage(json_encode($data, true));
+        $message = new AMQPMessage(serialize($data));
         $channel->basic_publish($message, '',  "QUEUE_GFW");
 
         // echo "Sent `$nameJob` to the task_queue.\n";

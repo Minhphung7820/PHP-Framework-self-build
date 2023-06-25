@@ -132,3 +132,10 @@ if (!function_exists('env')) {
         return $env[$key];
     }
 }
+
+if (!function_exists('event')) {
+    function event($object)
+    {
+        return \Supports\Facades\Event::dispatch($object);
+    }
+}

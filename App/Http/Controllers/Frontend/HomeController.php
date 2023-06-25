@@ -16,7 +16,20 @@ class HomeController extends BaseController
 {
     public function index()
     {
-        Event::dispatch(new AfterRegisted("HEHEcc"));
+        $data = [
+            'email' => 'minhphung485@gmail.com',
+            'name' => 'tmp',
+            'subject' => 'Demo Queue',
+            'body' => "qưerrr",
+        ];
+        Event::dispatch(new AfterRegisted($data));
         echo "This Is A Home Page";
+        // $arr = array(new AfterRegisted($data), "Fdf", 123, "KJ");
+
+        // $js = serialize($arr);
+        // $rs = unserialize($js);
+        // echo "<pre>";
+        // print_r($rs);
+        // echo "</pre>";
     }
 }

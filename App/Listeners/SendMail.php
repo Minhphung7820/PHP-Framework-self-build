@@ -7,7 +7,7 @@ use Supports\Facades\Interfaces\ShouldQueue;
 use Supports\Facades\Traits\Dispatchable;
 use Supports\Facades\Mail;
 
-class SendNotify implements ShouldQueue
+class SendMail implements ShouldQueue
 {
     use Dispatchable;
     public function handle(AfterRegisted $event)
