@@ -17,13 +17,14 @@ class HomeController extends BaseController
 {
     public function index()
     {
-        $data = [
-            'email' => 'phungtmps15106@fpt.edu.vn',
-            'name' => 'GalaxyFW',
-            'subject' => 'Demo Event',
-            'body' => 'This is Event Demo',
-        ];
-        Event::dispatch(new DemoEvent($data));
-        // echo "This is Home page";
+        // $data = [
+        //     'email' => 'phungtmps15106@fpt.edu.vn',
+        //     'name' => 'GalaxyFW',
+        //     'subject' => 'Demo Event',
+        //     'body' => 'This is Event Demo',
+        // ];
+        // // Event::dispatch(new DemoEvent($data));
+        // \App\Jobs\SendMailJob::dispatchNow($data);
+        echo "This is Home page";
     }
 }
